@@ -19,7 +19,7 @@ cd "/home/neupane/Downloads/college-information-portal-main (3)/college-informat
 python -m venv venv
 
 # Activate virtual environment
-source venv/bin/activate
+ venv/Scripts/activate
 ```
 
 ### 2. Install Dependencies
