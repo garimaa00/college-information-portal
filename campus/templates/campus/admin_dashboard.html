@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <!-- Welcome Header -->
+    <div class="card-modern mb-4" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+        <div class="card-body-modern py-4">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center">
+                        <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-right: 1.5rem;">
+                            <i class="bi bi-shield-lock-fill text-white" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-white mb-2">
+                                Welcome, {% if user.first_name and user.last_name %}{{ user.first_name }} {{ user.last_name }}{% elif user.first_name %}{{ user.first_name }}{% else %}Administrator{% endif %}!
+                            </h1>
+                            <p class="text-white opacity-75 mb-0">
+                                <i class="bi bi-calendar-check me-2"></i>System Administrator | Full Access Control
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end mt-3 mt-md-0">
+                    <div class="badge badge-warning-modern fs-5 px-4 py-3">
+                        <i class="bi bi-clock-history me-2"></i>
+                        {{ current_time|date:"M d, Y - h:i A" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Overview -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-xl-3">
+            <div class="card-modern h-100" style="border-left: 5px solid #2563eb;">
+                <div class="card-body-modern">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted mb-1 small text-uppercase">Total Students</p>
+                            <h2 class="mb-0 fw-bold" style="color: #2563eb;">{{ total_students|default:0 }}</h2>
+                        </div>
+                        <div style="width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.2)); display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-people-fill" style="font-size: 2rem; color: #2563eb;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card-modern h-100" style="border-left: 5px solid #10b981;">
+                <div class="card-body-modern">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted mb-1 small text-uppercase">Total Teachers</p>
+                            <h2 class="mb-0 fw-bold" style="color: #10b981;">{{ total_teachers|default:0 }}</h2>
+                        </div>
+                        <div style="width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2)); display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-person-badge-fill" style="font-size: 2rem; color: #10b981;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card-modern h-100" style="border-left: 5px solid #f59e0b;">
+                <div class="card-body-modern">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted mb-1 small text-uppercase">Pending Approvals</p>
+                            <h2 class="mb-0 fw-bold" style="color: #f59e0b;">{{ pending_users.count|default:0 }}</h2>
+                        </div>
+                        <div style="width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2)); display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-hourglass-split" style="font-size: 2rem; color: #f59e0b;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card-modern h-100" style="border-left: 5px solid #ef4444;">
+                <div class="card-body-modern">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted mb-1 small text-uppercase">Active Events</p>
+                            <h2 class="mb-0 fw-bold" style="color: #ef4444;">{{ active_events|default:0 }}</h2>
+                        </div>
+                        <div style="width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.2)); display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-calendar-event-fill" style="font-size: 2rem; color: #ef4444;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Actions Grid -->
+    <h3 class="fw-bold mb-4">
+        <i class="bi bi-grid-3x3-gap me-2"></i>Administrative Actions
+    </h3>
+    <div class="row g-4 mb-5">
+        <!-- Exam Dates -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'set_exam_dates' %}" class="text-decoration-none">
+                <div class="card-modern h-100" style="border-left: 4px solid #ef4444;">
+                    <div class="card-body-modern">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <div class="icon-box" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-calendar2-check-fill text-danger" style="font-size: 1.8rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="mb-2 fw-bold">Exam Schedule</h5>
+                                <p class="text-muted mb-3 small">Set and manage examination dates</p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge badge-danger-modern">Manage</span>
+                                    <i class="bi bi-arrow-right-circle text-danger"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Notifications -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'send_notifications' %}" class="text-decoration-none">
+                <div class="card-modern h-100" style="border-left: 4px solid #10b981;">
+                    <div class="card-body-modern">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <div class="icon-box" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-megaphone-fill text-success" style="font-size: 1.8rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="mb-2 fw-bold">Send Notifications</h5>
+                                <p class="text-muted mb-3 small">Broadcast announcements to users</p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge badge-success-modern">Send</span>
+                                    <i class="bi bi-arrow-right-circle text-success"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Update Seats -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'update_seats' %}" class="text-decoration-none">
+                <div class="card-modern h-100" style="border-left: 4px solid #f59e0b;">
+                    <div class="card-body-modern">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <div class="icon-box" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-chair-fill text-warning" style="font-size: 1.8rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="mb-2 fw-bold">Manage Seats</h5>
+                                <p class="text-muted mb-3 small">Update available course seats</p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge badge-warning-modern">Update</span>
+                                    <i class="bi bi-arrow-right-circle text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Post Event -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'post_event' %}" class="text-decoration-none">
+                <div class="card-modern h-100" style="border-left: 4px solid #7c3aed;">
+                    <div class="card-body-modern">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <div class="icon-box" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(124, 58, 237, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-calendar-event-fill" style="font-size: 1.8rem; color: #7c3aed;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="mb-2 fw-bold">Create Event</h5>
+                                <p class="text-muted mb-3 small">Post new campus events</p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge" style="background: #7c3aed; color: white;">Create</span>
+                                    <i class="bi bi-arrow-right-circle" style="color: #7c3aed;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Fee Alerts -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'alert_fee_dues' %}" class="text-decoration-none">
+                <div class="card-modern h-100" style="border-left: 4px solid #06b6d4;">
+                    <div class="card-body-modern">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <div class="icon-box" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-cash-stack text-info" style="font-size: 1.8rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="mb-2 fw-bold">Fee Alerts</h5>
+                                <p class="text-muted mb-3 small">Send fee due notifications</p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge" style="background: #06b6d4; color: white;">Alert</span>
+                                    <i class="bi bi-arrow-right-circle text-info"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Register User -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'add_user' %}" class="text-decoration-none">
+                <div class="card-modern h-100" style="border-left: 4px solid #2563eb;">
+                    <div class="card-body-modern">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <div class="icon-box" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-person-plus-fill text-primary" style="font-size: 1.8rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="mb-2 fw-bold">Register User</h5>
+                                <p class="text-muted mb-3 small">Create new user accounts</p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge badge-primary-modern">Add</span>
+                                    <i class="bi bi-arrow-right-circle text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Pending Approvals Section -->
+    <h3 class="fw-bold mb-4">
+        <i class="bi bi-person-check me-2"></i>Pending User Approvals
+        <span class="badge badge-warning-modern ms-2">{{ pending_users.count }} Pending</span>
+    </h3>
+    <div class="card-modern">
+        <div class="card-body-modern p-0">
+            {% if pending_users %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead style="background: #f8f9fa;">
+                        <tr>
+                            <th class="px-4 py-3">
+                                <i class="bi bi-calendar me-2"></i>Date Joined
+                            </th>
+                            <th class="px-4 py-3">
+                                <i class="bi bi-person me-2"></i>User Info
+                            </th>
+                            <th class="px-4 py-3">
+                                <i class="bi bi-person-badge me-2"></i>Role
+                            </th>
+                            <th class="px-4 py-3 text-center">
+                                <i class="bi bi-hourglass me-2"></i>Status
+                            </th>
+                            <th class="px-4 py-3 text-center">
+                                <i class="bi bi-gear me-2"></i>Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in pending_users %}
+                        <tr>
+                            <td class="px-4 py-3">
+                                <strong>{{ user.date_joined|date:"M d, Y" }}</strong>
+                                <br><small class="text-muted">{{ user.date_joined|timesince }} ago</small>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #7c3aed); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin-right: 12px;">
+                                        {{ user.email.0|upper }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-medium">{{ user.email }}</div>
+                                        {% if user.phone_number %}
+                                        <small class="text-muted">
+                                            <i class="bi bi-telephone me-1"></i>{{ user.phone_number }}
+                                        </small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="badge badge-primary-modern">
+                                    <i class="bi bi-person-badge me-1"></i>{{ user.role|title }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="badge badge-warning-modern">
+                                    <i class="bi bi-hourglass-split me-1"></i>Pending
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <a href="{% url 'approve_user' user.id %}" class="btn btn-success-modern btn-sm px-4">
+                                    <i class="bi bi-check-circle me-1"></i>Approve
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-5 text-center">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                <h4 class="mt-4 mb-3">All Caught Up!</h4>
+                <p class="text-muted fs-5 mb-0">No pending user approvals at the moment.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

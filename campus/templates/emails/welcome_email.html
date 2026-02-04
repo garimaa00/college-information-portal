@@ -1,0 +1,33 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+<h2>Welcome to ShankerDev Campus!</h2>
+
+<p>Dear {{ user_name }},</p>
+
+<p>Welcome to the ShankerDev Campus Portal! Your account has been successfully created.</p>
+
+<p><strong>Account Details:</strong></p>
+<ul>
+    <li>Email: {{ email }}</li>
+    <li>Role: {{ role|title }}</li>
+    <li>Registration Date: {{ date }}</li>
+</ul>
+
+<p>You can now log in to the portal and access all the features available for {{ role }}s.</p>
+
+<p><a href="http://127.0.0.1:8080/login/">Login to Portal</a></p>
+
+<p><strong>What's Next?</strong></p>
+<ul>
+    <li>Complete your profile information</li>
+    <li>Check your class schedule</li>
+    <li>View attendance records</li>
+    <li>Access assignments and notifications</li>
+</ul>
+
+<p>If you have any questions or need assistance, please contact the administration office.</p>
+
+<p>Best regards,<br>
+<strong>ShankerDev Campus Administration</strong></p>
+{% endblock %}

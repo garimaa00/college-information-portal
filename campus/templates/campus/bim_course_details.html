@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}BIM Course Details - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h2 class="card-title text-center text-primary">{{ course_info.title }}</h2>
+            <p class="text-center text-muted">{{ course_info.description }}</p>
+            <hr>
+            <div class="row text-center">
+                <div class="col-md-6">
+                    <p><strong>Duration:</strong> {{ course_info.duration }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Location:</strong> {{ course_info.location }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <h4 class="mb-3">Course Structure</h4>
+            {% for semester, subjects in bim_subjects.items %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    Semester {{ semester }}
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for subject in subjects %}
+                    <li class="list-group-item">{{ subject }}</li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">No subjects listed.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% empty %}
+            <p>No course structure available.</p>
+            {% endfor %}
+        </div>
+        <div class="col-md-4">
+            <h4 class="mb-3">Fee Structure</h4>
+            <div class="card">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Batch Year</th>
+                            <th>Fee (NPR)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for year, fee in fee_structure.items %}
+                        <tr>
+                            <td>{{ year }}</td>
+                            <td>{{ fee }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 text-center">
+                <a href="{% url 'login' %}" class="btn btn-lg btn-success w-100">Apply Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

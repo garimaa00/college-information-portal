@@ -1,0 +1,33 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+<h2>Low Attendance Alert</h2>
+
+<p>Dear {{ student_name }},</p>
+
+<p>This is to inform you that your attendance percentage has fallen below the required minimum.</p>
+
+<p><strong>Current Attendance Status:</strong></p>
+<ul>
+    <li>Attendance: {{ attendance_percentage }}%</li>
+    <li>Required Minimum: 80%</li>
+    <li>Status: Below Requirement</li>
+</ul>
+
+<p><strong>Important Information:</strong></p>
+<ul>
+    <li>Minimum 80% attendance is required to sit for examinations</li>
+    <li>Please ensure regular attendance going forward</li>
+    <li>Contact your class teacher for any clarifications</li>
+    <li>Medical certificates must be submitted for approved absences</li>
+</ul>
+
+<p>We encourage you to improve your attendance to meet the academic requirements.</p>
+
+<p><a href="http://127.0.0.1:8080/campus/student/attendance/">View Attendance Details</a></p>
+
+<p>If you have any concerns or need to discuss this matter, please contact the academic office.</p>
+
+<p>Best regards,<br>
+<strong>Academic Department<br>ShankerDev Campus</strong></p>
+{% endblock %}

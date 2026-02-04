@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Assignments - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <!-- Page Header -->
+    <div class="card-modern mb-4" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <div class="card-body-modern py-4">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center">
+                        <div style="width: 70px; height: 70px; border-radius: 16px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-right: 1.5rem;">
+                            <i class="bi bi-file-earmark-text-fill text-white" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-white mb-2 h3">All Your Assignments</h1>
+                            <p class="text-white opacity-75 mb-0">
+                                <i class="bi bi-list-check me-2"></i>Manage all assignments you've created
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end mt-3 mt-md-0">
+                    <a href="{% url 'teacher_dashboard' %}" class="btn btn-light btn-modern me-2">
+                        <i class="bi bi-arrow-left me-2"></i>Back
+                    </a>
+                    <a href="{% url 'add_assignment' %}" class="btn btn-modern" style="background: rgba(255,255,255,0.3); color: white; border: none;">
+                        <i class="bi bi-plus-circle me-2"></i>New Assignment
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card-modern h-100" style="border-left: 4px solid #10b981;">
+                <div class="card-body-modern">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Total Assignments</p>
+                            <h2 class="mb-0 fw-bold text-gradient">{{ assignments|length }}</h2>
+                        </div>
+                        <div style="width: 60px; height: 60px; border-radius: 12px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2)); display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-files text-success" style="font-size: 1.8rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-modern h-100" style="border-left: 4px solid #2563eb;">
+                <div class="card-body-modern">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Total Submissions</p>
+                            <h2 class="mb-0 fw-bold" style="color: #2563eb;">
+                                {% widthratio assignments|length 1 1 as dummy %}
+                                {{ assignments|length|add:0 }}
+                                {% comment %}Calculate total submissions{% endcomment %}
+                            </h2>
+                        </div>
+                        <div style="width: 60px; height: 60px; border-radius: 12px; background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.2)); display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-upload text-primary" style="font-size: 1.8rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-modern h-100" style="border-left: 4px solid #f59e0b;">
+                <div class="card-body-modern">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Subjects Covered</p>
+                            <h2 class="mb-0 fw-bold" style="color: #f59e0b;">
+                                {{ assignments|length }}
+                            </h2>
+                        </div>
+                        <div style="width: 60px; height: 60px; border-radius: 12px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2)); display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-book text-warning" style="font-size: 1.8rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignments List -->
+    <div class="card-modern">
+        <div class="card-header-modern" style="background: linear-gradient(135deg, #10b981, #059669);">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-ul me-2"></i>Assignment List
+                </h5>
+                <span class="badge" style="background: rgba(255,255,255,0.3); font-size: 1rem; padding: 0.5rem 1rem;">
+                    {{ assignments|length }} Total
+                </span>
+            </div>
+        </div>
+        <div class="card-body-modern p-0">
+            {% if assignments %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead style="background: #f8f9fa;">
+                        <tr>
+                            <th class="px-4 py-3" style="width: 5%;">#</th>
+                            <th class="px-4 py-3" style="width: 30%;">Assignment Title</th>
+                            <th class="px-4 py-3" style="width: 15%;">Subject</th>
+                            <th class="px-4 py-3" style="width: 10%;">Semester</th>
+                            <th class="px-4 py-3" style="width: 12%;">Due Date</th>
+                            <th class="px-4 py-3 text-center" style="width: 10%;">Submissions</th>
+                            <th class="px-4 py-3 text-center" style="width: 18%;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in assignments %}
+                        <tr>
+                            <td class="px-4 py-3">
+                                <span class="badge badge-primary-modern">{{ forloop.counter }}</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="fw-bold mb-1">{{ a.title }}</div>
+                                <small class="text-muted">
+                                    {% if a.file %}
+                                    <i class="bi bi-paperclip me-1"></i>Has attachment
+                                    {% else %}
+                                    <i class="bi bi-file-text me-1"></i>Text only
+                                    {% endif %}
+                                </small>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="badge badge-primary-modern" style="font-size: 0.85rem;">
+                                    {{ a.subject.name }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="badge badge-warning-modern">
+                                    Sem {{ a.semester }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="small">
+                                    <i class="bi bi-calendar-event me-1 text-muted"></i>
+                                    {{ a.due_date|date:"M d, Y" }}
+                                </div>
+                                {% now "Y-m-d" as today %}
+                                {% if a.due_date|date:"Y-m-d" < today %}
+                                <small class="text-danger">
+                                    <i class="bi bi-exclamation-circle me-1"></i>Overdue
+                                </small>
+                                {% elif a.due_date|date:"Y-m-d" == today %}
+                                <small class="text-warning">
+                                    <i class="bi bi-clock me-1"></i>Due today
+                                </small>
+                                {% else %}
+                                <small class="text-success">
+                                    <i class="bi bi-check-circle me-1"></i>Upcoming
+                                </small>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <div class="badge badge-success-modern" style="font-size: 1rem; padding: 0.5rem 0.75rem;">
+                                    {{ a.submission_count|default:0 }}
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="d-flex justify-content-center gap-1">
+                                    <a href="{% url 'view_submissions' a.id %}" 
+                                       class="btn btn-success-modern btn-sm" 
+                                       title="View Submissions">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{% url 'edit_assignment' a.id %}" 
+                                       class="btn btn-primary-modern btn-sm" 
+                                       title="Edit Assignment">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="{% url 'delete_assignment' a.id %}" 
+                                       class="btn btn-danger-modern btn-sm" 
+                                       title="Delete Assignment">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-5 text-center">
+                <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2)); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                    <i class="bi bi-inbox text-success" style="font-size: 3rem;"></i>
+                </div>
+                <h5 class="text-muted mb-3">No Assignments Yet</h5>
+                <p class="text-muted mb-4">You haven't created any assignments. Start by creating your first one!</p>
+                <a href="{% url 'add_assignment' %}" class="btn btn-success-modern">
+                    <i class="bi bi-plus-circle me-2"></i>Create First Assignment
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if assignments %}
+    <!-- Quick Actions Card -->
+    <div class="card-modern mt-4" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(5, 150, 105, 0.05));">
+        <div class="card-body-modern">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h6 class="fw-bold mb-2">
+                        <i class="bi bi-lightbulb-fill text-warning me-2"></i>Quick Tips
+                    </h6>
+                    <ul class="mb-0 small text-muted">
+                        <li class="mb-1">Click on the <i class="bi bi-eye"></i> icon to view student submissions</li>
+                        <li class="mb-1">Use the <i class="bi bi-pencil-square"></i> icon to edit assignment details</li>
+                        <li>The <i class="bi bi-trash"></i> icon permanently deletes the assignment and all submissions</li>
+                    </ul>
+                </div>
+                <div class="col-md-4 text-end mt-3 mt-md-0">
+                    <a href="{% url 'add_assignment' %}" class="btn btn-success-modern">
+                        <i class="bi bi-plus-circle me-2"></i>Add New Assignment
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .table tbody tr {
+        transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f9fafb;
+        transform: translateX(5px);
+    }
+
+    .btn-sm {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}

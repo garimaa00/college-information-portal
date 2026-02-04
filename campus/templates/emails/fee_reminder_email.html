@@ -1,0 +1,35 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+<h2>Fee Payment Reminder</h2>
+
+<p>Dear {{ student_name }},</p>
+
+<p>This is a friendly reminder regarding your pending fee payment.</p>
+
+<p><strong>Payment Details:</strong></p>
+<ul>
+    <li>Amount Due: Rs. {{ amount }}</li>
+    <li>Due Date: {{ due_date }}</li>
+    <li>Status: Pending</li>
+</ul>
+
+<p><strong>Payment Instructions:</strong></p>
+<ul>
+    <li>Visit the college administration office during working hours</li>
+    <li>Bring your student ID card</li>
+    <li>Payment can be made via cash, card, or bank transfer</li>
+    <li>Keep the receipt for your records</li>
+</ul>
+
+<p><strong>Office Hours:</strong> Sunday - Friday, 9:00 AM - 4:00 PM</p>
+
+<p><a href="http://127.0.0.1:8080/campus/student/fees/">View Fee Status</a></p>
+
+<p>Please ensure timely payment to avoid any inconvenience with your academic activities.</p>
+
+<p>For any queries, please contact the accounts department.</p>
+
+<p>Best regards,<br>
+<strong>Accounts Department<br>ShankerDev Campus</strong></p>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}Mark Attendance - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header Section -->
+    <div class="card-modern mb-4">
+        <div class="card-body-modern">
+            <h2 class="text-gradient mb-2">
+                <i class="bi bi-clipboard-check me-2"></i>Mark Student Attendance
+            </h2>
+            <p class="text-muted mb-0">
+                <i class="bi bi-calendar3 me-2"></i>{{ today|date:"F d, Y" }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Attendance Form -->
+    <div class="card-modern">
+        <div class="card-header-modern">
+            <i class="bi bi-people me-2"></i>Student List
+        </div>
+        <div class="card-body-modern">
+            <form method="post">
+                {% csrf_token %}
+                <div class="table-responsive">
+                    <table class="table table-modern">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">
+                                    <i class="bi bi-person me-2"></i>Student Name
+                                </th>
+                                <th class="text-center">
+                                    <i class="bi bi-check-circle me-2"></i>Present
+                                </th>
+                                <th class="text-center">
+                                    <i class="bi bi-x-circle me-2"></i>Absent
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr>
+                                <td class="fw-semibold">
+                                    <input type="hidden" name="students" value="{{ student.id }}">
+                                    <i class="bi bi-person-circle text-primary me-2"></i>
+                                    {% if student.get_full_name %}
+                                    {{ student.get_full_name }}
+                                    {% else %}
+                                    {{ student.email }}
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check d-inline-block">
+                                        <input class="form-check-input" type="radio" 
+                                               name="status_{{ student.id }}" 
+                                               id="present_{{ student.id }}" 
+                                               value="present" checked
+                                               style="width: 1.5rem; height: 1.5rem;">
+                                        <label class="form-check-label visually-hidden" for="present_{{ student.id }}">Present</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check d-inline-block">
+                                        <input class="form-check-input" type="radio" 
+                                               name="status_{{ student.id }}" 
+                                               id="absent_{{ student.id }}" 
+                                               value="absent"
+                                               style="width: 1.5rem; height: 1.5rem;">
+                                        <label class="form-check-label visually-hidden" for="absent_{{ student.id }}">Absent</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center py-4">
+                                    <div class="alert alert-modern alert-info mb-0">
+                                        <i class="bi bi-info-circle me-2"></i>No students found in the system.
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                {% if students %}
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-success-modern">
+                        <i class="bi bi-check-circle me-2"></i>Submit Attendance
+                    </button>
+                    <a href="{% url 'teacher_dashboard' %}" class="btn btn-modern" style="background: #6b7280; color: white;">
+                        <i class="bi bi-x-circle me-2"></i>Cancel
+                    </a>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="mt-4">
+        {% for message in messages %}
+        <div class="alert alert-modern alert-{{ message.tags }}">
+            <i class="bi bi-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .form-check-input:checked {
+        background-color: var(--success-color);
+        border-color: var(--success-color);
+    }
+</style>
+{% endblock %}

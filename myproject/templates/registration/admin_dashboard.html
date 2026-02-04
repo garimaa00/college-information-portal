@@ -1,0 +1,653 @@
+
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <!-- Header Section -->
+    <div class="admin-header-card mb-4">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="admin-icon-wrapper me-3">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <div>
+                        <h1 class="admin-title mb-1">Administrator Control Panel</h1>
+                        <p class="admin-subtitle mb-0">
+                            <i class="bi bi-person-circle me-2"></i>{{ user.email }}
+                            <span class="mx-2">|</span>
+                            <i class="bi bi-calendar3 me-2"></i>{% now "F j, Y" %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="admin-badge-group">
+                    <span class="admin-status-badge active">
+                        <i class="bi bi-circle-fill me-2"></i>System Active
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="admin-stat-card stat-primary">
+                <div class="stat-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_students|default:0 }}</div>
+                    <div class="stat-label">Total Students</div>
+                    <div class="stat-progress">
+                        <div class="progress-bar" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="admin-stat-card stat-success">
+                <div class="stat-icon">
+                    <i class="bi bi-person-video3"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_teachers|default:0 }}</div>
+                    <div class="stat-label">Total Teachers</div>
+                    <div class="stat-progress">
+                        <div class="progress-bar" style="width: 60%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="admin-stat-card stat-warning">
+                <div class="stat-icon">
+                    <i class="bi bi-book"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_courses|default:0 }}</div>
+                    <div class="stat-label">Total Courses</div>
+                    <div class="stat-progress">
+                        <div class="progress-bar" style="width: 85%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="admin-stat-card stat-info">
+                <div class="stat-icon">
+                    <i class="bi bi-calendar-event"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_events|default:0 }}</div>
+                    <div class="stat-label">Upcoming Events</div>
+                    <div class="stat-progress">
+                        <div class="progress-bar" style="width: 45%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="admin-section-card mb-4">
+        <div class="section-header">
+            <h3 class="section-title">
+                <i class="bi bi-lightning-charge-fill me-2"></i>Quick Actions
+            </h3>
+            <p class="section-subtitle">Frequently used management tools</p>
+        </div>
+        <div class="section-content">
+            <!-- Top 3 Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4 col-md-6">
+                    <a href="{% url 'campus:add_user' %}" class="admin-action-card">
+                        <div class="action-icon-wrapper icon-primary">
+                            <i class="bi bi-person-plus-fill"></i>
+                        </div>
+                        <h5 class="action-title">Add User</h5>
+                        <p class="action-description">Register new students or teachers</p>
+                        <span class="action-arrow"><i class="bi bi-arrow-right"></i></span>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <a href="{% url 'campus:manage_courses' %}" class="admin-action-card">
+                        <div class="action-icon-wrapper icon-success">
+                            <i class="bi bi-book-half"></i>
+                        </div>
+                        <h5 class="action-title">Manage Courses</h5>
+                        <p class="action-description">Add or edit course details</p>
+                        <span class="action-arrow"><i class="bi bi-arrow-right"></i></span>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <a href="{% url 'campus:post_event' %}" class="admin-action-card">
+                        <div class="action-icon-wrapper icon-warning">
+                            <i class="bi bi-calendar-plus"></i>
+                        </div>
+                        <h5 class="action-title">Post Event</h5>
+                        <p class="action-description">Create and publish new events</p>
+                        <span class="action-arrow"><i class="bi bi-arrow-right"></i></span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Bottom 3 Cards -->
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <a href="{% url 'campus:update_seats' %}" class="admin-action-card">
+                        <div class="action-icon-wrapper icon-info">
+                            <i class="bi bi-clipboard-data-fill"></i>
+                        </div>
+                        <h5 class="action-title">Update Seats</h5>
+                        <p class="action-description">Manage available course seats</p>
+                        <span class="action-arrow"><i class="bi bi-arrow-right"></i></span>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <a href="{% url 'campus:set_exam_dates' %}" class="admin-action-card">
+                        <div class="action-icon-wrapper icon-danger">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <h5 class="action-title">Set Exam Dates</h5>
+                        <p class="action-description">Schedule examination dates</p>
+                        <span class="action-arrow"><i class="bi bi-arrow-right"></i></span>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <a href="{% url 'campus:send_notifications' %}" class="admin-action-card">
+                        <div class="action-icon-wrapper icon-purple">
+                            <i class="bi bi-bell-fill"></i>
+                        </div>
+                        <h5 class="action-title">Send Notifications</h5>
+                        <p class="action-description">Notify students and teachers</p>
+                        <span class="action-arrow"><i class="bi bi-arrow-right"></i></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management Sections -->
+    <div class="row g-4 mb-4">
+        <!-- Student Management -->
+        <div class="col-lg-6">
+            <div class="admin-section-card">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="bi bi-people me-2"></i>Student Management
+                    </h3>
+                    <p class="section-subtitle">Monitor and manage student activities</p>
+                </div>
+                <div class="section-content">
+                    <div class="admin-menu-list">
+                        <a href="{% url 'campus:view_attendance' %}" class="admin-menu-item">
+                            <div class="menu-icon icon-primary">
+                                <i class="bi bi-clipboard-check"></i>
+                            </div>
+                            <div class="menu-content">
+                                <h5 class="menu-title">View Attendance Records</h5>
+                                <p class="menu-description">Check student attendance reports</p>
+                            </div>
+                            <div class="menu-arrow">
+                                <i class="bi bi-chevron-right"></i>
+                            </div>
+                        </a>
+                        <a href="{% url 'campus:check_fee_status' %}" class="admin-menu-item">
+                            <div class="menu-icon icon-success">
+                                <i class="bi bi-cash-coin"></i>
+                            </div>
+                            <div class="menu-content">
+                                <h5 class="menu-title">Check Fee Status</h5>
+                                <p class="menu-description">View student payment records</p>
+                            </div>
+                            <div class="menu-arrow">
+                                <i class="bi bi-chevron-right"></i>
+                            </div>
+                        </a>
+                        <a href="{% url 'campus:alert_fee_dues' %}" class="admin-menu-item">
+                            <div class="menu-icon icon-warning">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </div>
+                            <div class="menu-content">
+                                <h5 class="menu-title">Alert Fee Dues</h5>
+                                <p class="menu-description">Send payment reminders</p>
+                            </div>
+                            <div class="menu-arrow">
+                                <i class="bi bi-chevron-right"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Management -->
+        <div class="col-lg-6">
+            <div class="admin-section-card">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="bi bi-gear me-2"></i>System Management
+                    </h3>
+                    <p class="section-subtitle">Configure and monitor system activities</p>
+                </div>
+                <div class="section-content">
+                    <div class="admin-menu-list">
+                        <a href="{% url 'campus:view_events' %}" class="admin-menu-item">
+                            <div class="menu-icon icon-info">
+                                <i class="bi bi-calendar-event"></i>
+                            </div>
+                            <div class="menu-content">
+                                <h5 class="menu-title">View All Events</h5>
+                                <p class="menu-description">Manage campus events</p>
+                            </div>
+                            <div class="menu-arrow">
+                                <i class="bi bi-chevron-right"></i>
+                            </div>
+                        </a>
+                        <a href="{% url 'campus:view_exam_dates' %}" class="admin-menu-item">
+                            <div class="menu-icon icon-primary">
+                                <i class="bi bi-journal-text"></i>
+                            </div>
+                            <div class="menu-content">
+                                <h5 class="menu-title">View Exam Schedule</h5>
+                                <p class="menu-description">Check examination calendar</p>
+                            </div>
+                            <div class="menu-arrow">
+                                <i class="bi bi-chevron-right"></i>
+                            </div>
+                        </a>
+                        <a href="{% url 'campus:view_notifications' %}" class="admin-menu-item">
+                            <div class="menu-icon icon-purple">
+                                <i class="bi bi-bell"></i>
+                            </div>
+                            <div class="menu-content">
+                                <h5 class="menu-title">View Notifications</h5>
+                                <p class="menu-description">Check notification history</p>
+                            </div>
+                            <div class="menu-arrow">
+                                <i class="bi bi-chevron-right"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Information -->
+    <div class="admin-section-card">
+        <div class="section-header">
+            <h3 class="section-title">
+                <i class="bi bi-info-circle me-2"></i>System Information
+            </h3>
+        </div>
+        <div class="section-content">
+            <div class="admin-info-box">
+                <i class="bi bi-lightbulb-fill text-warning fs-3 me-3"></i>
+                <div>
+                    <h5 class="mb-2">Welcome to the Administrative Control Panel</h5>
+                    <p class="mb-0 text-muted">Use the tools above to efficiently manage your campus. Monitor student attendance, manage courses, schedule events, and keep everyone informed through notifications. All critical functions are accessible from this centralized dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Admin Dashboard Styles */
+    .admin-header-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .admin-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        color: white;
+    }
+    
+    .admin-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0;
+    }
+    
+    .admin-subtitle {
+        color: #6b7280;
+        font-size: 0.95rem;
+    }
+    
+    .admin-status-badge {
+        background: #10b981;
+        color: white;
+        padding: 0.5rem 1.25rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .admin-status-badge i {
+        font-size: 0.5rem;
+        animation: pulse-dot 2s infinite;
+    }
+    
+    @keyframes pulse-dot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    
+    /* Stats Cards */
+    .admin-stat-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 1.75rem;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .admin-stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: currentColor;
+    }
+    
+    .admin-stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+    
+    .stat-primary { color: #2563eb; }
+    .stat-success { color: #10b981; }
+    .stat-warning { color: #f59e0b; }
+    .stat-info { color: #06b6d4; }
+    
+    .stat-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        background: currentColor;
+        color: white;
+        opacity: 0.9;
+        flex-shrink: 0;
+    }
+    
+    .stat-content {
+        flex: 1;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1f2937;
+        line-height: 1;
+        margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+        color: #6b7280;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-progress {
+        height: 4px;
+        background: #e5e7eb;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+    
+    .stat-progress .progress-bar {
+        height: 100%;
+        background: currentColor;
+        border-radius: 2px;
+        transition: width 1s ease;
+    }
+    
+    /* Section Cards */
+    .admin-section-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+    
+    .section-header {
+        padding: 1.5rem 2rem;
+        background: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0 0 0.25rem 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .section-subtitle {
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin: 0;
+    }
+    
+    .section-content {
+        padding: 1.5rem 2rem;
+    }
+    
+    /* Action Cards */
+    .admin-action-card {
+        background: #ffffff;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s ease;
+        position: relative;
+        height: 100%;
+        min-height: 180px;
+    }
+    
+    .admin-action-card:hover {
+        border-color: currentColor;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+    
+    .action-icon-wrapper {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        margin-bottom: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .icon-primary { background: #2563eb; }
+    .icon-success { background: #10b981; }
+    .icon-warning { background: #f59e0b; }
+    .icon-info { background: #06b6d4; }
+    .icon-danger { background: #ef4444; }
+    .icon-purple { background: #7c3aed; }
+    
+    .action-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+        flex-grow: 0;
+    }
+    
+    .action-description {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-bottom: 0;
+        flex-grow: 1;
+    }
+    
+    .action-arrow {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .admin-action-card:hover .action-arrow {
+        background: currentColor;
+        color: white;
+        transform: translateX(4px);
+    }
+    
+    /* Menu List */
+    .admin-menu-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .admin-menu-item {
+        background: #f9fafb;
+        border-radius: 10px;
+        padding: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .admin-menu-item:hover {
+        background: #f3f4f6;
+        transform: translateX(4px);
+    }
+    
+    .menu-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: white;
+        flex-shrink: 0;
+    }
+    
+    .menu-content {
+        flex: 1;
+    }
+    
+    .menu-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0 0 0.25rem 0;
+    }
+    
+    .menu-description {
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin: 0;
+    }
+    
+    .menu-arrow {
+        color: #9ca3af;
+        transition: all 0.3s ease;
+    }
+    
+    .admin-menu-item:hover .menu-arrow {
+        color: #4b5563;
+        transform: translateX(4px);
+    }
+    
+    /* Info Box */
+    .admin-info-box {
+        background: #fef3c7;
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: start;
+    }
+    
+    .admin-info-box h5 {
+        color: #92400e;
+        font-weight: 700;
+    }
+    
+    .admin-info-box p {
+        color: #78350f;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .admin-header-card {
+            padding: 1.5rem;
+        }
+        
+        .admin-title {
+            font-size: 1.5rem;
+        }
+        
+        .admin-stat-card {
+            padding: 1.25rem;
+        }
+        
+        .stat-number {
+            font-size: 1.75rem;
+        }
+        
+        .section-header {
+            padding: 1.25rem 1.5rem;
+        }
+        
+        .section-content {
+            padding: 1.25rem 1.5rem;
+        }
+    }
+</style>
+{% endblock %}

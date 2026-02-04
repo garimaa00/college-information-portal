@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block title %}{{ assignment.title }} - Assignment{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Assignment Details Card -->
+            <div class="card-modern mb-4">
+                <div class="card-header-modern">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h3 class="mb-2"><i class="bi bi-file-earmark-text me-2"></i>{{ assignment.title }}</h3>
+                            <p class="mb-0 opacity-75">
+                                <i class="bi bi-book me-2"></i>{{ assignment.subject.name }}
+                            </p>
+                        </div>
+                        <span class="badge {% if assignment.due_date < today %}badge-danger-modern{% else %}badge-warning-modern{% endif %} fs-6">
+                            <i class="bi bi-clock me-1"></i>{{ assignment.due_date|date:"M d, Y" }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-body-modern">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="dashboard-card primary">
+                                <small class="text-muted d-block mb-1">Teacher</small>
+                                <strong><i class="bi bi-person me-2"></i>{{ assignment.teacher.get_full_name }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="dashboard-card success">
+                                <small class="text-muted d-block mb-1">Due Date</small>
+                                <strong><i class="bi bi-calendar3 me-2"></i>{{ assignment.due_date|date:"F d, Y" }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-text-paragraph me-2"></i>Description</h5>
+                        <div class="p-3 bg-light rounded">
+                            <p class="mb-0 text-muted">{{ assignment.description|linebreaks }}</p>
+                        </div>
+                    </div>
+
+                    {% if assignment.file %}
+                    <div class="alert alert-modern alert-info">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-paperclip fs-4 me-2"></i>
+                                <strong>Assignment Attachment Available</strong>
+                            </div>
+                            <a href="{{ assignment.file.url }}" class="btn btn-primary-modern btn-sm" download>
+                                <i class="bi bi-download me-2"></i>Download File
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Submission Status/Form Card -->
+            {% if submission %}
+            <div class="card-modern">
+                <div class="card-header-modern" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <i class="bi bi-check-circle me-2"></i>Assignment Submitted Successfully!
+                </div>
+                <div class="card-body-modern">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="dashboard-card success">
+                                <small class="text-muted d-block mb-1">Submitted On</small>
+                                <strong><i class="bi bi-calendar-check me-2"></i>{{ submission.submitted_at|date:"M d, Y H:i" }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="dashboard-card primary">
+                                <small class="text-muted d-block mb-1">Your Submission</small>
+                                <a href="{{ submission.file.url }}" target="_blank" class="btn btn-sm btn-primary-modern mt-2">
+                                    <i class="bi bi-eye me-2"></i>View File
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <i class="bi bi-cloud-upload me-2"></i>Submit Your Work
+                </div>
+                <div class="card-body-modern">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="{{ form.file.id_for_label }}" class="form-label-modern">
+                                <i class="bi bi-file-earmark-arrow-up me-2"></i>Upload Your Assignment File
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" name="{{ form.file.name }}" class="form-control" 
+                                   id="{{ form.file.id_for_label }}" required>
+                            <small class="text-muted d-block mt-2">
+                                <i class="bi bi-info-circle me-1"></i>Supported formats: PDF, DOC, DOCX, ZIP (Max 10MB)
+                            </small>
+                        </div>
+                        <div class="d-flex gap-3 justify-content-end">
+                            <a href="{% url 'submit_assignment' %}" class="btn btn-modern" style="background: #6b7280; color: white;">
+                                <i class="bi bi-x-circle me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success-modern">
+                                <i class="bi bi-check-circle me-2"></i>Submit Assignment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Back Button -->
+            <div class="mt-4 text-center">
+                <a href="{% url 'submit_assignment' %}" class="btn btn-primary-modern px-5">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Assignments
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border-radius: 12px;
+        padding: 0.875rem 1.25rem;
+        transition: all 0.3s;
+        background: #f8f9fa;
+    }
+    
+    .form-control:focus {
+        background: white;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        outline: none;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,258 @@
+{% comment %}
+{% extends 'base.html' %}
+{% block title %}Teacher Dashboard{% endblock %}
+{% block content %}
+<h1>Welcome, Teacher {{ user.email }}</h1>
+<p>Role: {{ user.role }}</p>
+<p>Manage courses and grades here (to be implemented).</p>
+{% endblock %} {% endcomment %}
+
+{% extends 'base.html' %}
+{% block title %}Teacher Dashboard{% endblock %}
+{% block content %}
+<div class="container">
+    <!-- Header Section -->
+    <div class="card-modern mb-4">
+        <div class="card-body-modern">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-gradient mb-2">
+                        <i class="bi bi-person-video3 me-2"></i>Teacher Dashboard
+                    </h2>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-envelope me-2"></i>{{ user.email }}
+                    </p>
+                </div>
+                <div class="text-end">
+                    <span class="badge badge-success-modern fs-6">
+                        <i class="bi bi-shield-check me-1"></i>Active
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stats-card">
+                <i class="bi bi-people-fill text-primary fs-2 mb-3"></i>
+                <div class="stats-number" style="font-size: 2rem;">{{ students|length }}</div>
+                <div class="stats-label">Total Students</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card">
+                <i class="bi bi-clipboard-check text-success fs-2 mb-3"></i>
+                <div class="stats-number" style="font-size: 2rem;">{{ attendances|length }}</div>
+                <div class="stats-label">Attendance Records</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card">
+                <i class="bi bi-list-task text-warning fs-2 mb-3"></i>
+                <div class="stats-number" style="font-size: 2rem;">{{ tasks|length }}</div>
+                <div class="stats-label">Assigned Tasks</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="row g-4">
+        <!-- Mark Your Attendance -->
+        <div class="col-lg-6">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <i class="bi bi-calendar-check me-2"></i>Mark Your Attendance
+                </div>
+                <div class="card-body-modern">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" name="present" id="teacherPresent" style="width: 3rem; height: 1.5rem;">
+                            <label class="form-check-label ms-2 fs-5" for="teacherPresent">
+                                I am present today
+                            </label>
+                        </div>
+                        <button type="submit" name="own_attendance" class="btn btn-success-modern w-100">
+                            <i class="bi bi-check-circle me-2"></i>Submit Attendance
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mark Student Attendance -->
+        <div class="col-lg-6">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <i class="bi bi-person-check me-2"></i>Mark Student Attendance
+                </div>
+                <div class="card-body-modern">
+                    <form method="post">
+                <div class="card-body-modern">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label-modern">
+                                <i class="bi bi-person me-2"></i>Select Student
+                            </label>
+                            <select name="student_id" class="form-control-modern">
+                                <option value="">-- Choose Student --</option>
+                                {% for student in students %}
+                                <option value="{{ student.id }}">{{ student.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" name="student_present" id="studentPresent" style="width: 3rem; height: 1.5rem;">
+                            <label class="form-check-label ms-2 fs-5" for="studentPresent">
+                                Student is present
+                            </label>
+                        </div>
+                        <button type="submit" name="student_attendance" class="btn btn-primary-modern w-100">
+                            <i class="bi bi-save me-2"></i>Mark Attendance
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assign Task -->
+        <div class="col-lg-12">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <i class="bi bi-clipboard-plus me-2"></i>Assign New Task
+                </div>
+                <div class="card-body-modern">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label-modern">
+                                    <i class="bi bi-person me-2"></i>Select Student
+                                </label>
+                                <select name="student_id" class="form-control-modern" required>
+                                    <option value="">-- Choose Student --</option>
+                                    {% for student in students %}
+                                    <option value="{{ student.id }}">{{ student.username }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-modern">
+                                    <i class="bi bi-calendar-event me-2"></i>Due Date
+                                </label>
+                                <input type="date" name="due_date" class="form-control-modern" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label-modern">
+                                    <i class="bi bi-pencil me-2"></i>Task Title
+                                </label>
+                                <input type="text" name="task_title" class="form-control-modern" placeholder="Enter task title" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label-modern">
+                                    <i class="bi bi-text-paragraph me-2"></i>Task Description
+                                </label>
+                                <textarea name="task_description" class="form-control-modern" rows="4" placeholder="Enter detailed task description" required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" name="assign_task" class="btn btn-success-modern">
+                                    <i class="bi bi-send me-2"></i>Assign Task
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Your Attendances -->
+        <div class="col-lg-6">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <i class="bi bi-clock-history me-2"></i>Your Attendance History
+                </div>
+                <div class="card-body-modern">
+                    {% if attendances %}
+                    <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+                        {% for attendance in attendances %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                            <div>
+                                <i class="bi bi-calendar3 text-primary me-2"></i>
+                                <span class="fw-semibold">{{ attendance.date|date:"F d, Y" }}</span>
+                            </div>
+                            {% if attendance.present %}
+                            <span class="badge badge-success-modern">
+                                <i class="bi bi-check-circle me-1"></i>Present
+                            </span>
+                            {% else %}
+                            <span class="badge badge-danger-modern">
+                                <i class="bi bi-x-circle me-1"></i>Absent
+                            </span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-modern alert-info">
+                        <i class="bi bi-info-circle me-2"></i>No attendance records yet.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Assigned Tasks -->
+        <div class="col-lg-6">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <i class="bi bi-list-check me-2"></i>Assigned Tasks
+                </div>
+                <div class="card-body-modern">
+                    {% if tasks %}
+                    <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+                        {% for task in tasks %}
+                        <div class="list-group-item border-0 px-0 py-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="mb-0 fw-bold">{{ task.title }}</h6>
+                                {% if task.completed %}
+                                <span class="badge badge-success-modern">
+                                    <i class="bi bi-check-circle me-1"></i>Completed
+                                </span>
+                                {% else %}
+                                <span class="badge badge-warning-modern">
+                                    <i class="bi bi-clock me-1"></i>Pending
+                                </span>
+                                {% endif %}
+                            </div>
+                            <p class="text-muted small mb-1">
+                                <i class="bi bi-person me-1"></i>{{ task.student.username }}
+                            </p>
+                            <p class="text-muted small mb-0">
+                                <i class="bi bi-calendar me-1"></i>Due: {{ task.due_date|date:"M d, Y" }}
+                            </p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-modern alert-info">
+                        <i class="bi bi-info-circle me-2"></i>No tasks assigned yet.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Set minimum date to today for due_date input
+    const dateInput = document.querySelector('input[name="due_date"]');
+    if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+    }
+</script>
+{% endblock %}

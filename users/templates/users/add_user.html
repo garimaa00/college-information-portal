@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Register New User - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Register New User</h2>
+    <p>Create a new account for a Student or Teacher. Credentials will be emailed to them.</p>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="text-danger">
+                        {{ field.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-primary">Create User</button>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

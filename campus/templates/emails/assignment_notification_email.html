@@ -1,0 +1,27 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+<h2>New Assignment Posted</h2>
+
+<p>Dear {{ student_name }},</p>
+
+<p>A new assignment has been posted for your semester.</p>
+
+<p><strong>Assignment Details:</strong></p>
+<ul>
+    <li>Title: {{ assignment_title }}</li>
+    <li>Subject: {{ subject }}</li>
+    <li>Semester: {{ semester }}</li>
+    <li>Due Date: {{ due_date }}</li>
+</ul>
+
+<p><strong>Description:</strong></p>
+<p>{{ description }}</p>
+
+<p><a href="http://127.0.0.1:8080/campus/student/">View Assignment</a></p>
+
+<p><strong>Reminder:</strong> Please submit your assignment before the due date to avoid late penalties.</p>
+
+<p>Best regards,<br>
+<strong>{{ teacher_name }}<br>ShankerDev Campus</strong></p>
+{% endblock %}

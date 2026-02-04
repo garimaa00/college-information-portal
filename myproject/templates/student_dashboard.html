@@ -1,0 +1,399 @@
+
+{% extends 'my_project/base.html' %}
+
+{% load static %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="container mx-auto mt-5">
+  
+  <header class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">Student Dashboard</h1>
+    <div>
+      <span class="badge bg-primary">Logged in as: Student</span>
+      <span class="badge bg-primary">{{user.email}}</span>
+    </div>
+  </header>
+
+  
+  <div class="mb-4 card p-3">
+    <div class="d-flex flex-wrap justify-center gap-3 mb-5">
+      <button class="btn btn-outline-primary"  onclick="showSection('records')">View Records</button>
+      <button class="btn btn-outline-secondary" style="border-color:#7e22ce;color:#7e22ce" onclick="showSection('attendance')">Attendance</button>
+      <button class="btn btn-outline-primary" onclick="showSection('exam')">Exam Dates</button>
+      <button class="btn btn-outline-success" onclick="showSection('fee')">Fee Records</button>
+      <button class="btn btn-outline-info" onclick="showSection('events')">Events</button>
+      <button class="btn btn-outline-warning" onclick="showSection('notifications')">Notifications</button>
+      <button class="btn btn-outline-purple" style="border-color:#7e22ce;color:#7e22ce" onclick="showSection('course')"> Manage Course</button>
+      <button class="btn btn-outline-danger"    onclick="showSection('teacher-presence')">Teacher Presence</button>
+    </div>
+  </div>
+
+  <div id="records" class="hidden">
+    <div class="card shadow p-4 border-3 purple-100" style="border-color:#7e22ce">
+
+      <h3 class="h5 text-purple-700 fw-bold mb-3">Student Records</h3>
+      <p class="text-muted small fw-semibold text-purple-800">Search or filter by semester / course</p>
+
+        <div class="d-flex gap-2 mb-3">
+          <input id="searchInput" class="form-control w-auto border-purple-800" placeholder="Search name, roll or course">
+          <select id="semesterFilter" class="form-select w-auto border-purple-300" style="width:140px;">
+            <option value="">All Semesters</option>
+            <option>1st Semester</option>
+            <option>2nd Semester</option>
+            <option>3rd Semester</option>
+            <option>4th Semester</option>
+            <option>5th Semester</option>
+            <option>6th Semester</option>
+            <option>7th Semester</option>
+            <option>8th Semester</option>
+
+          </select>
+          <button type="submit" class="btn btn-primary"  onclick="renderTable()" style="background-color:#7e22ce">Search</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-striped" id="studentsTable">
+            <thead>
+              <tr>
+                <th>Roll</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Semester</th>
+                <th>Course</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody"></tbody>
+          </table>
+        </div>
+      
+    </div>
+  </div>
+    
+
+  <div id="attendance" class="hidden">
+    <div class="card shadow p-4 border-3" style="border-color:#7e22ce">
+      <h3 class="h5 text-purple-700 fw-bold mb-3">Attendance</h3>
+
+      <div class="bg-purple-100 p-3 rounded mb-4">
+        <form class="d-flex align-items-center gap-3 flex-wrap" onsubmit="renderAttendanceTable(); return false;">
+          <label class="fw-semibold text-purple-800">Select Student:</label>
+          <select id="attendanceRoll" class="form-select w-auto border-purple-300" onchange="renderAttendanceFor(this.value)">
+            <option value="">-- Choose Roll --</option>
+            {% for s in students %}<option value="{{ s.roll }}">{{ s.roll }} – {{ s.name }}</option>{% endfor %}
+          </select>
+          <button type="submit" class="btn text-white px-3" style="background-color:#7e22ce">Search</button>
+        </form>
+      </div>
+
+      <div id="attendanceContent" class="mt-2"></div>
+    </div>
+  </div>
+
+  <div id="exam" class="hidden">
+    <div class="card shadow p-4 border-3" style="border-color:#7e22ce">
+      <h3 class="h5 text-purple-700 fw-bold mb-3">Exam Dates</h3>
+
+      <div class="bg-purple-100 p-3 rounded mb-4">
+        <form id="examform" class="d-flex align-items-center gap-3 flex-wrap" onsubmit="lookupExam(event)">
+          <label class="fw-semibold text-purple-800">Semester:</label>
+          <select id="examSemester" class="form-select w-auto border-purple-300">
+            <option value="">-- Choose Semester --</option>
+            <option>1st</option><option>2nd</option><option>3rd</option><option>4th</option>
+            <option>5th</option><option>6th</option><option>7th</option><option>8th</option>
+          </select>
+          <button type="submit" class="btn text-white px-3" style="background-color:#7e22ce">Lookup</button>
+        </form>
+      </div>
+
+      <div id="examResult" class="mt-3 text-muted small"></div>
+    </div>
+  </div>
+
+ <div id="events" class="hidden">
+    <div class="card shadow p-4 border-3" style="border-color:#7e22ce">
+      <h3 class="h5 text-purple-700 fw-bold mb-3">Events</h3>
+
+      <div class="bg-purple-100 p-3 rounded mb-4">
+        <form class="d-flex align-items-center gap-3 flex-wrap" onsubmit="renderEvents(); return false;">
+          <label class="fw-semibold text-purple-800">Filter by Month:</label>
+          <select id="eventMonth" class="form-select w-auto border-purple-300">
+            <option value="">All</option>
+            <option>October</option><option>November</option><option>December</option>
+          </select>
+          <button type="submit" class="btn text-white px-3" style="background-color:#7e22ce">Apply</button>
+        </form>
+      </div>
+
+      <ul id="eventsList" class="list-group list-group-flush mt-2"></ul>
+    </div>
+  </div>
+
+    
+  <div id="notifications" class="hidden">
+    <div class="card shadow p-4 border-3" style="border-color:#7e22ce">
+
+        <h3 class="h5 text-purple-700 fw-bold mb-3">Notifications</h3>
+        <ul id="notificationsList" class="list-unstyled mt-2"></ul>
+    </div>
+  </div>    
+
+  <div  id="fee" class="hidden">
+    <div class="card shadow p-4 border-3" style="border-color:#7e22ce">
+        <h3 class="h5 text-purple-700 fw-bold mb-3">Fee Records</h3>
+        <form id="feeForm" class="mt-2" onsubmit="lookupFee(event)">
+          <div class="mb-2">
+            <input id="feeRoll" class="form-control" placeholder="Roll No" required>
+          </div>
+          <div class="mb-2">
+            <input id="feeSemester" class="form-control" placeholder="Semester" required>
+          </div>
+          <button class="btn btn-success w-100" style="background-color:#7e22ce">Lookup Fee</button>
+        </form>
+        <div id="feeResult" class="mt-3 text-muted small"></div>
+    </div>
+  </div> 
+  
+  <div id="course" class="hidden">
+    <div class="card shadow p-4 border-3" style="border-color:#7e22ce">
+      <h3 class="h5 text-purple-700 fw-bold mb-3"> Manage Course</h3>
+
+      <!-- Semester selection -->
+      <div class="bg-purple-100 p-3 rounded mb-4">
+        <form id="semesterForm" onsubmit="updateSemester(event)" class="d-flex align-items-center gap-3">
+          <label class="fw-semibold text-purple-800">Select Semester:</label>
+          <select id="semesterSelect" class="form-select w-auto border-purple-300">
+            <option value="">-- Choose Semester --</option>
+            <option value="1st">1st Semester</option>
+            <option value="2nd">2nd Semester</option>
+            <option value="3rd">3rd Semester</option>
+            <option value="4th">4th Semester</option>
+            <option value="5th">5th Semester</option>
+            <option value="6th">6th Semester</option>
+            <option value="7th">7th Semester</option>
+            <option value="8th">8th Semester</option>
+          </select>
+          <button type="submit" class="btn text-white px-3" style="background-color:#7e22ce">Update</button>
+        </form>
+      </div>
+
+      <!-- Display subjects dynamically -->
+      <div id="courseContent">
+        <p class="text-muted">Please select a semester to view subjects.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="teacher-presence" class="hidden">
+    <div class="card shadow p-4 border-3" style="border-color:#7e22ce">
+      <h3 class="h5 text-purple-700 fw-bold mb-3"> Teacher Presence</h3>
+
+      <div class="bg-purple-100 p-3 rounded mb-4">
+        <form class="d-flex align-items-center gap-3 flex-wrap" onsubmit="renderTeacherPresence(); return false;">
+          <label class="fw-semibold text-purple-800">Filter by Subject:</label>
+          <select id="subjectFilter" class="form-select w-auto border-purple-300" style="width:140px;">
+            <option value="">All Subjects</option>
+            <option>Mathematics</option><option>Physics</option><option>Computer Science</option>
+            <option>English</option><option>Economics</option>
+          </select>
+          <button type="submit" class="btn text-white px-3" style="background-color:#7e22ce">Refresh</button>
+        </form>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-striped" id="teachersTable">
+          <thead><tr>
+            <th>Teacher Name</th><th>Subject</th><th>Status</th>
+          </tr></thead>
+          <tbody id="teacherTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+
+  
+  <div class="modal fade" id="studentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Student Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="studentModalBody"></div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<script>
+  // --- Sample Data ---
+  const students = [
+    { roll: 'C64', name: 'Garima Nepal', contact: '9861824924', semester: '6th', course: 'BIM' },
+    { roll: 'C42', name: 'Ankita Simkhada', contact: '+977-980000002', semester: '6th', course: 'BIM' },
+    { roll: 'C60', name: 'Ajita  Shahi', contact: '+977-980000002', semester: '6th', course: 'BIM' },
+  ];
+
+  const exams =[
+    {semester:6, examstart:2025-11-3, ends:2025-11-5},
+    {semester:4, examstart:2025-11-3,ends:2025-11-6}
+  ]
+  const attendance = {
+    'C64': { present: 42, absent: 3, per_class: [{date:'2025-10-01',status:'present'},{date:'2025-10-02',status:'absent'}] },
+    'C42': { present: 39, absent: 6, per_class: [{date:'2025-10-01',status:'present'},{date:'2025-10-02',status:'present'}] },
+    'C60': { present: 40, absent: 5, per_class: [{date:'2025-10-01',status:'absent'},{date:'2025-10-02',status:'present'}] }
+  };
+
+  const events = [
+    { date: '2025-11-01', title: 'Semester Exam', desc: 'End semester examinations start.' },
+    { date: '2025-12-05', title: 'Convocation', desc: 'Graduation ceremony.' }
+  ];
+
+  const notifications = [
+    'Library will be closed on 2025-11-02',
+    'New scholarship applications open.'
+  ];
+
+  const fees = {
+    'C64|6th': { paid: true, amount: 54000, due: 0 },
+    'C42|6th': { paid: false, amount: 50000, due: 4000 }
+  };
+
+  // --- Render functions ---
+  function renderTable(){
+    const tbody = document.querySelector('#studentsTable tbody');
+    tbody.innerHTML = '';
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const sem = document.getElementById('semesterFilter').value;
+    const filtered = students.filter(s => {
+      if(sem && s.semester !== sem) return false;
+      if(!q) return true;
+      return s.name.toLowerCase().includes(q) || s.roll.toLowerCase().includes(q) || s.course.toLowerCase().includes(q);
+    });
+    for(const s of filtered){
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${s.roll}</td>
+        <td>${s.name}</td>
+        <td>${s.contact}</td>
+        <td>${s.semester}</td>
+        <td>${s.course}</td>
+        <td><button class="btn btn-sm btn-primary" onclick="openStudent('${s.roll}')">View</button></td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+
+  function openStudent(roll){
+    const student = students.find(s=>s.roll===roll);
+    const att = attendance[roll] || {present:0,absent:0,per_class:[]};
+    const body = document.getElementById('studentModalBody');
+    body.innerHTML = `
+      <h4>${student.name} <small class='text-muted'>${student.roll}</small></h4>
+      <p><strong>Contact:</strong> ${student.contact} <br/><strong>Course:</strong> ${student.course} <br/><strong>Semester:</strong> ${student.semester}</p>
+      <hr/>
+      <h5>Attendance Summary</h5>
+      <p>Present: ${att.present} &nbsp; Absent: ${att.absent}</p>
+      <div class='mb-2'>
+        <strong>Per class:</strong>
+        <ul>${att.per_class.map(p=>`<li>${p.date} — ${p.status}</li>`).join('')}</ul>
+      </div>
+    `;
+    const modal = new bootstrap.Modal(document.getElementById('studentModal'));
+    modal.show();
+    renderAttendanceFor(roll);
+  }
+
+  function renderAttendanceFor(roll){
+    const att = attendance[roll] || {present:0,absent:0,per_class:[]};
+    const container = document.getElementById('attendanceContent');
+    container.innerHTML = `
+      <div class='d-flex align-items-center gap-3 mb-2'>
+        <div><strong>Present:</strong> ${att.present}</div>
+        <div><strong>Absent:</strong> ${att.absent}</div>
+      </div>
+      <div>
+        <strong>Last 7 classes</strong>
+        <div class='d-flex gap-2 mt-2'>
+          ${att.per_class.slice(-7).map(p=>`<div class='p-2 border rounded ${p.status==='absent'?'text-danger':'text-success'}'>${p.date} <br/><small>${p.status}</small></div>`).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderEvents(){
+    const ul = document.getElementById('eventsList');
+    ul.innerHTML = events.map(e=>`<li class='list-group-item'><strong>${e.date}</strong> — ${e.title}<div class='small text-muted'>${e.desc}</div></li>`).join('');
+  }
+
+  function renderNotifications(){
+    const ul = document.getElementById('notificationsList');
+    ul.innerHTML = notifications.map(n=>`<li class='mb-2'><div class='text-muted small'>${n}</div></li>`).join('');
+  }
+
+  function lookupFee(ev){
+    ev.preventDefault();
+    const key = document.getElementById('feeRoll').value+'|'+document.getElementById('feeSemester').value;
+    const res = fees[key];
+    const out = document.getElementById('feeResult');
+    if(!res) out.innerHTML = '<div class="text-warning">No record found for this roll/semester.</div>';
+    else out.innerHTML = `<div><strong>Amount:</strong> ${res.amount} <br/><strong>Paid:</strong> ${res.paid} <br/><strong>Due:</strong> ${res.due}</div>`;
+  }
+
+  function renderCalendar(){
+    const container = document.getElementById('calendar');
+    container.innerHTML = '';
+    for(let d=1; d<=31; d++){
+      const div = document.createElement('div');
+      div.className = 'calendar-day text-center border';
+      const dateStr = `2025-10-${String(d).padStart(2,'0')}`;
+      const absentDays = ['2025-10-02','2025-10-11','2025-10-20'];
+      if(absentDays.includes(dateStr)) div.classList.add('bg-danger-subtle');
+      div.textContent = d;
+      container.appendChild(div);
+    }
+  }
+
+  // initial render
+  renderTable();
+  renderEvents();
+  renderNotifications();
+  renderCalendar();
+</script>
+<script>
+  // --- Show/Hide Section Function ---
+  function showSection(sectionId) {
+    const allSections = [
+      'records', 'attendance', 'exam', 'fee', 'events', 'notifications', 'course','teacher presence'
+    ];
+
+    // Hide all sections
+    allSections.forEach(id => {
+      const section = document.getElementById(id);
+      if (section) section.classList.add('hidden');
+    });
+
+    // Show only clicked one
+    const active = document.getElementById(sectionId);
+    if (active) active.classList.remove('hidden');
+  }
+</script>
+
+<style>
+  /* hidden by default */
+  .hidden {
+    display: none;
+  }
+</style>
+
+{% endblock %}
+

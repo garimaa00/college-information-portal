@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Send Notifications - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <!-- Header -->
+    <div class="card-modern mb-4" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+        <div class="card-body-modern py-4">
+            <div class="d-flex align-items-center">
+                <div style="width: 60px; height: 60px; border-radius: 16px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                    <i class="bi bi-bell-fill text-white" style="font-size: 1.8rem;"></i>
+                </div>
+                <div>
+                    <h2 class="text-white mb-1">Send Notifications</h2>
+                    <p class="text-white opacity-75 mb-0">Send emails and notifications to students and teachers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Notification Form -->
+        <div class="col-lg-7">
+            <div class="card-modern">
+                <div class="card-body-modern">
+                    <h5 class="mb-4"><i class="bi bi-envelope-fill me-2" style="color: #8b5cf6;"></i>Compose Notification</h5>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold mb-3"><i class="bi bi-people me-2"></i>Select Recipients</label>
+                            <div class="recipient-options">
+                                {% for value, label in form.recipient_type.field.choices %}
+                                <div class="form-check recipient-card mb-2">
+                                    <input class="form-check-input" type="radio" name="recipient_type" id="recipient_{{ value }}" value="{{ value }}" {% if form.recipient_type.value == value %}checked{% endif %}>
+                                    <label class="form-check-label w-100" for="recipient_{{ value }}">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi {% if 'all_students' in value %}bi-people-fill{% elif 'semester' in value %}bi-calendar3{% elif 'teacher' in value %}bi-person-workspace{% else %}bi-person-check-fill{% endif %} me-3" style="font-size: 1.2rem; color: #8b5cf6;"></i>
+                                            <span>{{ label }}</span>
+                                        </div>
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3" id="semester-field" style="display:none;">
+                            <label class="form-label fw-semibold"><i class="bi bi-calendar3 me-2"></i>{{ form.semester.label }}</label>
+                            {% render_field form.semester class="form-select" %}
+                        </div>
+                        
+                        <div class="mb-3" id="recipients-field" style="display:none;">
+                            <label class="form-label fw-semibold"><i class="bi bi-person-check me-2"></i>{{ form.recipients.label }}</label>
+                            {% render_field form.recipients class="form-select" size="8" %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold"><i class="bi bi-chat-left-text me-2"></i>{{ form.subject.label }}</label>
+                            {% render_field form.subject class="form-control" placeholder="Enter notification subject" %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold"><i class="bi bi-file-text me-2"></i>{{ form.message.label }}</label>
+                            {% render_field form.message class="form-control" rows="6" placeholder="Enter your message here..." %}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-send-fill me-2"></i>Send Notification
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sent Notifications -->
+        <div class="col-lg-5">
+            <div class="card-modern">
+                <div class="card-body-modern">
+                    <h5 class="mb-4"><i class="bi bi-clock-history me-2" style="color: #8b5cf6;"></i>Sent Notifications</h5>
+                    
+                    {% if sent_notifications %}
+                    <div class="notification-list" style="max-height: 600px; overflow-y: auto;">
+                        {% for notif in sent_notifications %}
+                        <div class="card mb-3" style="border-left: 4px solid #8b5cf6;">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="mb-0">{{ notif.message|truncatewords:8 }}</h6>
+                                    <span class="badge bg-light text-dark">{{ notif.created_at|date:"M d" }}</span>
+                                </div>
+                                <p class="text-muted small mb-2">{{ notif.message|truncatewords:15 }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted"><i class="bi bi-clock me-1"></i>{{ notif.created_at|date:"h:i A" }}</small>
+                                    <a href="{% url 'delete_notification' notif.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this notification?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox" style="font-size: 3rem; color: #d1d5db;"></i>
+                        <p class="text-muted mt-3">No notifications sent yet</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const recipientRadios = document.querySelectorAll('input[name="recipient_type"]');
+    const semesterField = document.querySelector('#semester-field');
+    const recipientsField = document.querySelector('#recipients-field');
+    
+    function toggleFields() {
+        const selected = document.querySelector('input[name="recipient_type"]:checked');
+        if (!selected) return;
+        
+        const value = selected.value;
+        semesterField.style.display = value === 'specific_semester' ? 'block' : 'none';
+        recipientsField.style.display = value === 'specific_users' ? 'block' : 'none';
+    }
+    
+    recipientRadios.forEach(radio => {
+        radio.addEventListener('change', toggleFields);
+    });
+    toggleFields();
+});
+</script>
+
+<style>
+.recipient-card {
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 12px 16px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.recipient-card:hover {
+    border-color: #8b5cf6;
+    background: #f9fafb;
+}
+
+.recipient-card input[type="radio"]:checked + label {
+    color: #8b5cf6;
+    font-weight: 600;
+}
+
+.recipient-card input[type="radio"]:checked ~ * {
+    border-color: #8b5cf6;
+}
+
+.recipient-card:has(input[type="radio"]:checked) {
+    border-color: #8b5cf6;
+    background: #f5f3ff;
+}
+
+.form-check-input:checked {
+    background-color: #8b5cf6;
+    border-color: #8b5cf6;
+}
+</style>
+{% endblock %}

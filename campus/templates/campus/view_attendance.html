@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Attendance Records - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header Section -->
+    <div class="card-modern mb-4">
+        <div class="card-body-modern">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="mb-3 mb-md-0">
+                    <h2 class="text-gradient mb-2">
+                        <i class="bi bi-clipboard-check me-2"></i>Attendance Records
+                    </h2>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-calendar3 me-2"></i>View and manage student attendance
+                    </p>
+                </div>
+                <div>
+                    {% if request.user.role == 'student' %}
+                    <a href="{% url 'student_dashboard' %}" class="btn btn-primary-modern">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                    </a>
+                    {% elif request.user.role == 'teacher' %}
+                    <a href="{% url 'teacher_dashboard' %}" class="btn btn-success-modern">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                    </a>
+                    {% else %}
+                    <a href="{% url 'admin_dashboard' %}" class="btn btn-danger-modern">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance Table -->
+    <div class="card-modern">
+        <div class="card-header-modern">
+            <i class="bi bi-table me-2"></i>Attendance Log
+        </div>
+        <div class="card-body-modern p-0">
+            {% if attendance_records %}
+            <div class="table-responsive">
+                <table class="table table-modern mb-0">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-person me-2"></i>Student Email</th>
+                            <th><i class="bi bi-calendar3 me-2"></i>Date</th>
+                            <th><i class="bi bi-check-circle me-2"></i>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in attendance_records %}
+                        <tr>
+                            <td class="fw-semibold">{{ record.student.email }}</td>
+                            <td>{{ record.date|date:"F d, Y" }}</td>
+                            <td>
+                                {% if record.present %}
+                                <span class="badge badge-success-modern">
+                                    <i class="bi bi-check-circle me-1"></i>Present
+                                </span>
+                                {% else %}
+                                <span class="badge badge-danger-modern">
+                                    <i class="bi bi-x-circle me-1"></i>Absent
+                                </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-4">
+                <div class="alert alert-modern alert-info mb-0">
+                    <i class="bi bi-info-circle me-2"></i>No attendance records found for the selected criteria.
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

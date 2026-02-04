@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Post Event - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header Card -->
+            <div class="card-modern mb-4">
+                <div class="card-header-modern">
+                    <i class="bi bi-calendar-plus me-2"></i>Post New Event
+                </div>
+                <div class="card-body-modern">
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Create and share campus events with students and faculty
+                    </p>
+                </div>
+            </div>
+
+            <!-- Event Form Card -->
+            <div class="card-modern">
+                <div class="card-body-modern">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                        <div class="mb-4">
+                            <label for="{{ field.id_for_label }}" class="form-label-modern">
+                                <i class="bi bi-{% if field.name == 'title' %}type{% elif field.name == 'date' %}calendar3{% elif field.name == 'type' %}tag{% else %}text-paragraph{% endif %} me-2"></i>
+                                {{ field.label }}
+                                {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                            </label>
+                            {% if field.name == 'description' %}
+                                {% render_field field class="form-control" rows="4" placeholder="Enter event description..." %}
+                            {% elif field.name == 'date' %}
+                                {% render_field field class="form-control" type="date" %}
+                            {% else %}
+                                {% render_field field class="form-control" placeholder=field.label %}
+                            {% endif %}
+                            
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-circle me-1"></i>{{ field.errors.0 }}
+                                </div>
+                            {% endif %}
+                            {% if field.help_text %}
+                                <small class="text-muted d-block mt-1">{{ field.help_text }}</small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+
+                        <div class="d-flex gap-3 justify-content-end">
+                            <a href="{% url 'admin_dashboard' %}" class="btn btn-modern" style="background: #6b7280; color: white;">
+                                <i class="bi bi-x-circle me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success-modern">
+                                <i class="bi bi-calendar-check me-2"></i>Post Event
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control, .form-select, textarea {
+        border-radius: 12px;
+        padding: 0.875rem 1.25rem;
+        transition: all 0.3s;
+        background: #f8f9fa;
+    }
+    
+    .form-control:focus, .form-select:focus, textarea:focus {
+        background: white;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        outline: none;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = document.querySelector('input[name="date"]');
+        if (dateInput) {
+            dateInput.setAttribute('min', today);
+        }
+    });
+</script>
+{% endblock %}

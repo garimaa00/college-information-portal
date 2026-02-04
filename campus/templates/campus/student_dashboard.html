@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Student Dashboard - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <!-- Welcome Header -->
+    <div class="card-modern mb-4" style="background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);">
+        <div class="card-body-modern py-4">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="text-white mb-2">
+                        <i class="bi bi-person-circle me-2"></i>
+                        Welcome back, {% if user.first_name and user.last_name %}{{ user.first_name }} {{ user.last_name }}{% elif user.first_name %}{{ user.first_name }}{% else %}{{ user.email }}{% endif %}!
+                    </h1>
+                    <p class="text-white opacity-75 mb-0">
+                        <i class="bi bi-calendar-check me-2"></i>{{ profile.semester }} Semester | {{ profile.section }} Section | {{ profile.faculty }}
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="badge badge-warning-modern fs-5 px-4 py-3">
+                        <i class="bi bi-graph-up me-2"></i>
+                        Attendance: {{ attendance_percent|floatformat:1 }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'view_my_attendance' %}" class="text-decoration-none">
+                <div class="card-modern h-100" style="border-left: 4px solid #2563eb;">
+                    <div class="card-body-modern">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <div class="icon-box" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-calendar-check-fill text-primary" style="font-size: 1.8rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="mb-2 fw-bold">My Attendance</h5>
+                                <p class="text-muted mb-3 small">Track your daily attendance records</p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge badge-primary-modern">{{ attendance_percent|floatformat:1 }}%</span>
+                                    <i class="bi bi-arrow-right-circle text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'submit_assignment' %}" class="text-decoration-none">
+                <div class="card-modern h-100" style="border-left: 4px solid #10b981;">
+                    <div class="card-body-modern">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <div class="icon-box" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-file-earmark-text-fill text-success" style="font-size: 1.8rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="mb-2 fw-bold">Assignments</h5>
+                                <p class="text-muted mb-3 small">Submit and track your assignments</p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge badge-success-modern">{{ assignments|length }} Pending</span>
+                                    <i class="bi bi-arrow-right-circle text-success"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'check_fee_status' %}" class="text-decoration-none">
+                <div class="card-modern h-100" style="border-left: 4px solid #f59e0b;">
+                    <div class="card-body-modern">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <div class="icon-box" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-credit-card-fill text-warning" style="font-size: 1.8rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="mb-2 fw-bold">Fee Status</h5>
+                                <p class="text-muted mb-3 small">Check your pending dues</p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge badge-warning-modern">{{ fees|length }} Due</span>
+                                    <i class="bi bi-arrow-right-circle text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'view_exam_dates' %}" class="text-decoration-none">
+                <div class="card-modern h-100" style="border-left: 4px solid #ef4444;">
+                    <div class="card-body-modern">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <div class="icon-box" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-clipboard-check-fill text-danger" style="font-size: 1.8rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="mb-2 fw-bold">Exam Schedule</h5>
+                                <p class="text-muted mb-3 small">View upcoming examination dates</p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge badge-danger-modern">{{ exams|length }} Upcoming</span>
+                                    <i class="bi bi-arrow-right-circle text-danger"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'view_events' %}" class="text-decoration-none">
+                <div class="card-modern h-100" style="border-left: 4px solid #7c3aed;">
+                    <div class="card-body-modern">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <div class="icon-box" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(124, 58, 237, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-calendar-event-fill" style="font-size: 1.8rem; color: #7c3aed;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="mb-2 fw-bold">Campus Events</h5>
+                                <p class="text-muted mb-3 small">Stay updated with campus activities</p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge" style="background: #7c3aed; color: white;">{{ events|length }} Events</span>
+                                    <i class="bi bi-arrow-right-circle" style="color: #7c3aed;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'view_notifications' %}" class="text-decoration-none">
+                <div class="card-modern h-100" style="border-left: 4px solid #06b6d4;">
+                    <div class="card-body-modern">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <div class="icon-box" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-bell-fill text-info" style="font-size: 1.8rem;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="mb-2 fw-bold">Notifications</h5>
+                                <p class="text-muted mb-3 small">View important announcements</p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge" style="background: #06b6d4; color: white;">{{ notifications|length }} New</span>
+                                    <i class="bi bi-arrow-right-circle text-info"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content Row -->
+    <div class="row g-4 mb-4">
+        <!-- Recent Assignments -->
+        <div class="col-lg-8">
+            <div class="card-modern h-100">
+                <div class="card-header-modern" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-file-earmark-text me-2"></i>Recent Assignments
+                        </h5>
+                        <a href="{% url 'submit_assignment' %}" class="btn btn-sm text-white" style="background: rgba(255,255,255,0.2);">
+                            View All <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body-modern p-0">
+                    {% if assignments %}
+                    <div class="list-group list-group-flush">
+                        {% for assignment in assignments|slice:":5" %}
+                        <a href="{% url 'assignment_detail' assignment.id %}" class="list-group-item list-group-item-action px-4 py-3" style="border: none; transition: all 0.3s;">
+                            <div class="d-flex w-100 justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-2 fw-bold">
+                                        <i class="bi bi-clipboard-check me-2 text-success"></i>{{ assignment.title }}
+                                    </h6>
+                                    <p class="mb-2 text-muted small">
+                                        <i class="bi bi-person me-1"></i>
+                                        {% if assignment.teacher.first_name %}
+                                            {{ assignment.teacher.get_full_name }}
+                                        {% else %}
+                                            {{ assignment.teacher.email }}
+                                        {% endif %}
+                                    </p>
+                                    <p class="mb-0 text-muted small">{{ assignment.description|truncatewords:15 }}</p>
+                                </div>
+                                <div class="text-end ms-3">
+                                    <span class="badge badge-warning-modern mb-2">
+                                        <i class="bi bi-calendar-event me-1"></i>{{ assignment.due_date|date:"M d" }}
+                                    </span>
+                                    <br>
+                                    <small class="text-muted">Due in {{ assignment.due_date|timeuntil }}</small>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="p-5 text-center">
+                        <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-3 mb-0">No pending assignments at the moment</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications & Updates -->
+        <div class="col-lg-4">
+            <div class="card-modern h-100">
+                <div class="card-header-modern" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bell me-2"></i>Recent Updates
+                        </h5>
+                    </div>
+                </div>
+                <div class="card-body-modern p-0" style="max-height: 500px; overflow-y: auto;">
+                    {% if notifications %}
+                    <div class="list-group list-group-flush">
+                        {% for note in notifications|slice:":8" %}
+                        <div class="list-group-item px-4 py-3" style="border: none;">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.2)); display: flex; align-items: center; justify-content: center;">
+                                        <i class="bi bi-info-circle-fill text-info"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <p class="mb-1 small">{{ note.message }}</p>
+                                    <small class="text-muted">
+                                        <i class="bi bi-clock me-1"></i>{{ note.created_at|timesince }} ago
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="p-5 text-center">
+                        <i class="bi bi-bell-slash text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-3 mb-0">No recent updates</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teacher Attendance & Subjects Row -->
+    <div class="row g-4">
+        <!-- Teacher Attendance -->
+        <div class="col-lg-6">
+            <div class="card-modern">
+                <div class="card-header-modern" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">
+                    <h5 class="mb-0">
+                        <i class="bi bi-people me-2"></i>Today's Teacher Attendance
+                    </h5>
+                </div>
+                <div class="card-body-modern p-0">
+                    {% if teachers_attendance %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead style="background: #f8f9fa;">
+                                <tr>
+                                    <th class="px-4 py-3">Teacher</th>
+                                    <th class="px-4 py-3 text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for att in teachers_attendance %}
+                                <tr>
+                                    <td class="px-4 py-3">
+                                        <div class="d-flex align-items-center">
+                                            <div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, #7c3aed, #6d28d9); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                                {{ att.teacher.first_name.0|default:"T" }}{{ att.teacher.last_name.0|default:"" }}
+                                            </div>
+                                            <span class="ms-3 fw-medium">
+                                                {% if att.teacher.first_name and att.teacher.last_name %}
+                                                    {{ att.teacher.first_name }} {{ att.teacher.last_name }}
+                                                {% else %}
+                                                    {{ att.teacher.email }}
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        {% if att.present %}
+                                        <span class="badge badge-success-modern">
+                                            <i class="bi bi-check-circle me-1"></i>Present
+                                        </span>
+                                        {% else %}
+                                        <span class="badge badge-danger-modern">
+                                            <i class="bi bi-x-circle me-1"></i>Absent
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="p-5 text-center">
+                        <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-3 mb-0">No teacher attendance records for today</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- My Subjects -->
+        <div class="col-lg-6">
+            <div class="card-modern">
+                <div class="card-header-modern" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">
+                    <h5 class="mb-0">
+                        <i class="bi bi-book me-2"></i>My Subjects
+                    </h5>
+                </div>
+                <div class="card-body-modern p-0">
+                    {% if subjects %}
+                    <div class="list-group list-group-flush">
+                        {% for subject in subjects %}
+                        <div class="list-group-item px-4 py-3" style="border: none;">
+                            <div class="d-flex align-items-center">
+                                <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.2)); display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-journal-text text-primary" style="font-size: 1.2rem;"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <h6 class="mb-0 fw-bold">{{ subject.name }}</h6>
+                                    <small class="text-muted">{{ subject.code }}</small>
+                                </div>
+                                <span class="badge badge-primary-modern">{{ subject.credit_hours }} Credits</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="p-5 text-center">
+                        <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-3 mb-0">No subjects assigned yet</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

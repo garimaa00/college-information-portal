@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Teacher Dashboard - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+  <!-- Welcome Header -->
+  <div class="card-modern mb-4" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+    <div class="card-body-modern py-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <div class="d-flex align-items-center">
+            <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin-right: 1.5rem;">
+              <i class="bi bi-person-badge-fill text-white" style="font-size: 2.5rem;"></i>
+            </div>
+            <div>
+              <h1 class="text-white mb-2">
+                Welcome, {% if user.first_name and user.last_name %}{{ user.first_name }} {{ user.last_name }}{% elif user.first_name %}{{ user.first_name }}{% else %}{{ user.email }}{% endif %}!
+              </h1>
+              <p class="text-white opacity-75 mb-0">
+                <i class="bi bi-mortarboard me-2"></i>Teacher | Faculty Member
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 text-end mt-3 mt-md-0">
+          <div class="badge badge-warning-modern fs-5 px-4 py-3">
+            <i class="bi bi-calendar-check me-2"></i>
+            {{ current_date|date:"M d, Y" }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions Cards -->
+  <h3 class="fw-bold mb-4">
+    <i class="bi bi-lightning-charge me-2"></i>Quick Actions
+  </h3>
+  <div class="row g-4 mb-5">
+    <div class="col-md-6 col-lg-3">
+      <a href="{% url 'mark_attendance' %}" class="text-decoration-none">
+        <div class="card-modern h-100" style="border-left: 4px solid #2563eb;">
+          <div class="card-body-modern">
+            <div class="d-flex align-items-start">
+              <div class="flex-shrink-0">
+                <div class="icon-box" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                  <i class="bi bi-check-square-fill text-primary" style="font-size: 1.8rem;"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <h5 class="mb-2 fw-bold">Mark Attendance</h5>
+                <p class="text-muted mb-3 small">Record student attendance for today</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge badge-primary-modern">Mark Now</span>
+                  <i class="bi bi-arrow-right-circle text-primary"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+      <a href="{% url 'add_assignment' %}" class="text-decoration-none">
+        <div class="card-modern h-100" style="border-left: 4px solid #10b981;">
+          <div class="card-body-modern">
+            <div class="d-flex align-items-start">
+              <div class="flex-shrink-0">
+                <div class="icon-box" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                  <i class="bi bi-plus-circle-fill text-success" style="font-size: 1.8rem;"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <h5 class="mb-2 fw-bold">Add Assignment</h5>
+                <p class="text-muted mb-3 small">Create new assignments for students</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge badge-success-modern">Create</span>
+                  <i class="bi bi-arrow-right-circle text-success"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+      <a href="{% url 'list_assignments' %}" class="text-decoration-none">
+        <div class="card-modern h-100" style="border-left: 4px solid #7c3aed;">
+          <div class="card-body-modern">
+            <div class="d-flex align-items-start">
+              <div class="flex-shrink-0">
+                <div class="icon-box" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(124, 58, 237, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                  <i class="bi bi-list-check text-purple" style="font-size: 1.8rem; color: #7c3aed;"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <h5 class="mb-2 fw-bold">Manage Assignments</h5>
+                <p class="text-muted mb-3 small">View, edit & delete assignments</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge" style="background: #7c3aed; color: white;">Manage</span>
+                  <i class="bi bi-arrow-right-circle" style="color: #7c3aed;"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+      <a href="{% url 'mark_teacher_attendance' %}" class="text-decoration-none">
+        <div class="card-modern h-100" style="border-left: 4px solid #f59e0b;">
+          <div class="card-body-modern">
+            <div class="d-flex align-items-start">
+              <div class="flex-shrink-0">
+                <div class="icon-box" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2)); width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                  <i class="bi bi-person-check-fill text-warning" style="font-size: 1.8rem;"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <h5 class="mb-2 fw-bold">My Attendance</h5>
+                <p class="text-muted mb-3 small">Record your daily check-in</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge badge-warning-modern">Check In</span>
+                  <i class="bi bi-arrow-right-circle text-warning"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Active Assignments & Statistics -->
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card-modern">
+        <div class="card-header-modern" style="background: linear-gradient(135deg, #10b981, #059669);">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <i class="bi bi-file-earmark-text me-2"></i>Your Active Assignments
+            </h5>
+            <div class="d-flex gap-2 align-items-center">
+              <span class="badge" style="background: rgba(255,255,255,0.3);">
+                {% if assignments %}{{ assignments|length }}{% else %}0{% endif %} Active
+              </span>
+              <a href="{% url 'list_assignments' %}" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white; border: none;">
+                <i class="bi bi-list-ul me-1"></i>View All
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body-modern p-0">
+          {% if assignments %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead style="background: #f8f9fa;">
+                <tr>
+                  <th class="px-4 py-3">Assignment Title</th>
+                  <th class="px-4 py-3">Subject</th>
+                  <th class="px-4 py-3 text-center">Submissions</th>
+                  <th class="px-4 py-3 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for a in assignments %}
+                <tr>
+                  <td class="px-4 py-3">
+                    <div class="fw-bold">{{ a.title }}</div>
+                    <small class="text-muted">Due: {{ a.due_date|date:"M d, Y" }}</small>
+                  </td>
+                  <td class="px-4 py-3">
+                    <span class="badge badge-primary-modern">{{ a.subject.name }}</span>
+                  </td>
+                  <td class="px-4 py-3 text-center">
+                    <div class="badge badge-success-modern" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                      {{ a.submission_count|default:0 }}
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 text-center">
+                    <div class="btn-group" role="group">
+                      <a href="{% url 'view_submissions' a.id %}" class="btn btn-success-modern btn-sm" title="View Submissions">
+                        <i class="bi bi-eye me-1"></i>View
+                      </a>
+                      <a href="{% url 'edit_assignment' a.id %}" class="btn btn-primary-modern btn-sm" title="Edit Assignment">
+                        <i class="bi bi-pencil-square"></i>
+                      </a>
+                      <a href="{% url 'delete_assignment' a.id %}" class="btn btn-danger-modern btn-sm" title="Delete Assignment">
+                        <i class="bi bi-trash"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="p-5 text-center">
+            <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+            <p class="text-muted mt-3 mb-0">No active assignments</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card-modern mb-4">
+        <div class="card-header-modern" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">
+          <h5 class="mb-0">
+            <i class="bi bi-bell me-2"></i>Recent Updates
+          </h5>
+        </div>
+        <div class="card-body-modern p-0" style="max-height: 400px; overflow-y: auto;">
+          {% if notifications %}
+          <div class="list-group list-group-flush">
+            {% for note in notifications|slice:":5" %}
+            <div class="list-group-item px-4 py-3" style="border: none;">
+              <div class="d-flex align-items-start">
+                <div style="width: 35px; height: 35px; border-radius: 8px; background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.2)); display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">
+                  <i class="bi bi-info-circle-fill text-primary"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="mb-1 small">{{ note.message }}</p>
+                  <small class="text-muted">
+                    <i class="bi bi-clock me-1"></i>{{ note.created_at|timesince }} ago
+                  </small>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="p-5 text-center">
+            <i class="bi bi-bell-slash text-muted" style="font-size: 2rem;"></i>
+            <p class="text-muted mt-3 mb-0 small">No recent notifications</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

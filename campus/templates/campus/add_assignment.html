@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Add Assignment - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header Section -->
+    <div class="card-modern mb-4">
+        <div class="card-body-modern">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="mb-3 mb-md-0">
+                    <h2 class="text-gradient mb-2">
+                        <i class="bi bi-file-earmark-plus me-2"></i>Create New Assignment
+                    </h2>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Add assignment details for students
+                    </p>
+                </div>
+                <div>
+                    <a href="{% url 'teacher_dashboard' %}" class="btn btn-modern" style="background: #6b7280; color: white;">
+                        <i class="bi bi-arrow-left me-2"></i>Back
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignment Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <i class="bi bi-pencil-square me-2"></i>Assignment Details
+                </div>
+                <div class="card-body-modern">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                        <div class="mb-4">
+                            <label for="{{ field.id_for_label }}" class="form-label-modern">
+                                {% if 'title' in field.name %}
+                                <i class="bi bi-bookmark me-2"></i>
+                                {% elif 'description' in field.name %}
+                                <i class="bi bi-text-paragraph me-2"></i>
+                                {% elif 'due_date' in field.name %}
+                                <i class="bi bi-calendar-event me-2"></i>
+                                {% elif 'file' in field.name %}
+                                <i class="bi bi-file-earmark-arrow-up me-2"></i>
+                                {% elif 'course' in field.name %}
+                                <i class="bi bi-book me-2"></i>
+                                {% else %}
+                                <i class="bi bi-pencil me-2"></i>
+                                {% endif %}
+                                {{ field.label }}
+                                {% if field.field.required %}
+                                <span class="text-danger">*</span>
+                                {% endif %}
+                            </label>
+                            
+                            {% if field.field.widget.input_type == 'textarea' %}
+                                {% render_field field class+="form-control-modern" rows="5" %}
+                            {% else %}
+                                {% render_field field class+="form-control-modern" %}
+                            {% endif %}
+                            
+                            {% if field.help_text %}
+                            <small class="text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                            
+                            {% if field.errors %}
+                            <div class="text-danger small mt-1">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                {{ field.errors|join:", " }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success-modern">
+                                <i class="bi bi-check-circle me-2"></i>Create Assignment
+                            </button>
+                            <a href="{% url 'teacher_dashboard' %}" class="btn btn-modern" style="background: #6b7280; color: white;">
+                                <i class="bi bi-x-circle me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="mt-4">
+        {% for message in messages %}
+        <div class="alert alert-modern alert-{{ message.tags }}">
+            <i class="bi bi-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 2px solid #e5e7eb;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        outline: none;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var today = new Date().toISOString().split('T')[0];
+        var dateInput = document.getElementById("id_due_date");
+        if (dateInput) {
+            dateInput.setAttribute('min', today);
+        }
+    });
+</script>
+{% endblock %}

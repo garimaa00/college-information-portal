@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}Fee Status - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Card -->
+    <div class="card-modern mb-4">
+        <div class="card-body-modern">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="mb-3 mb-md-0">
+                    <h2 class="text-gradient mb-2">
+                        <i class="bi bi-cash-coin me-2"></i>My Fee Status
+                    </h2>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-info-circle me-2"></i>View your pending fee payments
+                    </p>
+                </div>
+                <div>
+                    {% if fees %}
+                    <span class="badge badge-danger-modern fs-6">
+                        <i class="bi bi-exclamation-triangle me-2"></i>{{ fees|length }} Pending Due{{ fees|length|pluralize }}
+                    </span>
+                    {% else %}
+                    <span class="badge badge-success-modern fs-6">
+                        <i class="bi bi-check-circle me-2"></i>All Clear!
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if fees %}
+    <!-- Fee Table Card -->
+    <div class="card-modern mb-4">
+        <div class="card-body-modern p-0">
+            <div class="table-responsive">
+                <table class="table table-modern mb-0">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-calendar3 me-2"></i>Due Date</th>
+                            <th><i class="bi bi-cash me-2"></i>Amount</th>
+                            <th><i class="bi bi-hourglass-split me-2"></i>Days Overdue</th>
+                            <th class="text-center"><i class="bi bi-flag me-2"></i>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fee in fees %}
+                        <tr>
+                            <td>
+                                <strong>{{ fee.due_date|date:"F d, Y" }}</strong>
+                                <br><small class="text-muted">{{ fee.due_date|date:"l" }}</small>
+                            </td>
+                            <td>
+                                <span class="fs-5 fw-bold text-primary">NRs. {{ fee.amount }}</span>
+                            </td>
+                            <td>
+                                {% if fee.days_overdue %}
+                                <span class="badge badge-danger-modern">
+                                    <i class="bi bi-exclamation-circle me-1"></i>{{ fee.days_overdue }} days
+                                </span>
+                                {% else %}
+                                <span class="badge badge-warning-modern">
+                                    <i class="bi bi-clock me-1"></i>Due Soon
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <span class="badge badge-danger-modern">
+                                    <i class="bi bi-x-circle me-1"></i>Unpaid
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="bg-light">
+                        <tr>
+                            <td colspan="3" class="text-end fw-bold">Total Amount Due:</td>
+                            <td class="text-center">
+                                <span class="fs-5 fw-bold text-danger">
+                                    NRs. {% widthratio fees|length 1 1 %}{{ total_amount|default:"0" }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning Alert -->
+    <div class="alert alert-modern alert-danger">
+        <div class="d-flex align-items-start">
+            <i class="bi bi-exclamation-triangle fs-3 me-3"></i>
+            <div>
+                <h5 class="mb-2">Payment Required</h5>
+                <p class="mb-2">Please clear your pending fees to avoid any disruption in your academic activities.</p>
+                <small><i class="bi bi-info-circle me-1"></i>Contact the accounts office for payment options.</small>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Success State -->
+    <div class="card-modern">
+        <div class="card-body-modern text-center py-5">
+            <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+            <h3 class="mt-4 mb-3 fw-bold">All Clear!</h3>
+            <p class="text-muted fs-5 mb-4">You have no pending fee dues. Your account is up to date!</p>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="dashboard-card success">
+                        <i class="bi bi-award fs-2 text-success mb-2"></i>
+                        <p class="mb-0"><strong>Great job!</strong> Your timely payments help us maintain quality education.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Back Button -->
+    <div class="mt-4 text-center">
+        <a href="{% url 'student_dashboard' %}" class="btn btn-primary-modern px-5">
+            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

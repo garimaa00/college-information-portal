@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Exam Schedule - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Card -->
+    <div class="card-modern mb-4">
+        <div class="card-body-modern">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="mb-3 mb-md-0">
+                    <h2 class="text-gradient mb-2">
+                        <i class="bi bi-clipboard2-check me-2"></i>Examination Schedule
+                    </h2>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-calendar-range me-2"></i>View your upcoming exam dates and routines
+                    </p>
+                </div>
+                <div>
+                    {% if routine_images %}
+                    <span class="badge badge-primary-modern fs-6">
+                        <i class="bi bi-file-earmark-text me-2"></i>{{ routine_images|length }} Routine{{ routine_images|length|pluralize }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Semester Routines -->
+    {% if routine_images %}
+    <div class="row g-4 mb-4">
+        {% for routine in routine_images %}
+        <div class="col-lg-6">
+            <div class="card-modern h-100">
+                <div class="card-header-modern" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-journal-text me-2"></i>{{ routine.title|default:"Exam Routine" }}
+                        </h5>
+                        <span class="badge" style="background: rgba(255,255,255,0.3);">
+                            Semester {{ routine.semester }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body-modern">
+                    {% if routine.start_date and routine.end_date %}
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="dashboard-card success">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="bi bi-calendar-check me-1"></i>Start Date
+                                </small>
+                                <strong>{{ routine.start_date|date:"M d, Y" }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="dashboard-card danger">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="bi bi-calendar-x me-1"></i>End Date
+                                </small>
+                                <strong>{{ routine.end_date|date:"M d, Y" }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if routine.details %}
+                    <div class="alert alert-modern alert-info mb-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        {{ routine.details|linebreaksbr }}
+                    </div>
+                    {% endif %}
+
+                    {% if routine.file %}
+                    <div class="text-center">
+                        {% if routine.file.url|lower|slice:"-4:" == ".pdf" %}
+                        <a href="{{ routine.file.url }}" class="btn btn-danger-modern w-100 py-3" target="_blank">
+                            <i class="bi bi-file-pdf fs-5 me-2"></i>View Routine PDF
+                        </a>
+                        {% else %}
+                        <div class="mb-3">
+                            <img src="{{ routine.file.url }}" class="img-fluid rounded" 
+                                 style="max-height: 400px; border: 3px solid #f3f4f6;" alt="Routine Preview">
+                        </div>
+                        <a href="{{ routine.file.url }}" class="btn btn-primary-modern w-100" target="_blank">
+                            <i class="bi bi-arrows-fullscreen me-2"></i>View Full Image
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- No Exams State -->
+    <div class="card-modern">
+        <div class="card-body-modern text-center py-5">
+            <i class="bi bi-calendar2-x text-muted" style="font-size: 5rem;"></i>
+            <h3 class="mt-4 mb-3">No Exam Schedules Available</h3>
+            <p class="text-muted fs-5 mb-0">Exam routines will be posted here when available.</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Back Button -->
+    <div class="mt-4 text-center">
+        <a href="{% url 'student_dashboard' %}" class="btn btn-primary-modern px-5">
+            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

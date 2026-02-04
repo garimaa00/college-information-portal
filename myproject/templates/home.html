@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Welcome - ShankerDev Campus{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center">
+    <div class="container-fluid py-5 position-relative">
+        <div class="mb-4 animate__animated animate__fadeIn">
+            <i class="bi bi-bank2 text-white" style="font-size: 5rem;"></i>
+        </div>
+        <h1 class="hero-title mb-4">Welcome to ShankerDev Campus</h1>
+        <p class="fs-4 text-white mb-5 col-md-8 mx-auto" style="font-weight: 300;">
+            Excellence in Education. Shaping Future Leaders in Technology and Management.
+        </p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a href="{% url 'login_selection' %}" class="btn btn-warning-modern btn-lg px-5 fw-bold">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Login to Portal
+            </a>
+            <a href="#about" class="btn btn-modern text-white px-5 fw-bold" style="background: rgba(255,255,255,0.2);">
+                <i class="bi bi-info-circle me-2"></i>Learn More
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- About Section -->
+    <div id="about" class="row mb-5 align-items-center">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="card-modern p-4">
+                <h2 class="text-gradient fw-bold mb-3">
+                    <i class="bi bi-mortarboard-fill me-2"></i>About ShankerDev Campus
+                </h2>
+                <p class="lead text-muted mb-3">
+                    <i class="bi bi-star-fill text-warning me-2"></i>
+                    A premier institution dedicated to providing top-tier education in Business and Information Management.
+                </p>
+                <p class="text-muted mb-3">
+                    <i class="bi bi-geo-alt-fill text-danger me-2"></i>
+                    Located in the heart of Kathmandu, Putalisadak, we offer state-of-the-art facilities and a curriculum designed to meet industry demands.
+                </p>
+                <p class="text-muted">
+                    <i class="bi bi-laptop-fill text-primary me-2"></i>
+                    Our BIM program blends IT proficiency with management skills, preparing students for the digital age.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card-modern overflow-hidden">
+                <img src="/media/exam_routines/sdc.jpg" alt="ShankerDev Campus" class="img-fluid w-100" style="height: 400px; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-5" style="opacity: 0.1;">
+
+    <!-- Events & Seats Row -->
+    <div class="row mb-5 g-4">
+        <!-- Upcoming Events -->
+        <div class="col-lg-6">
+            <div class="card-modern p-4">
+                <h3 class="fw-bold mb-4">
+                    <i class="bi bi-calendar-event text-success me-2"></i>
+                    <span class="text-gradient">Upcoming Events</span>
+                </h3>
+                {% if events %}
+                <div class="events-list">
+                    {% for event in events %}
+                    <div class="event-card">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="bi bi-star-fill text-warning me-2"></i>{{ event.title }}
+                            </h5>
+                            <span class="badge badge-success-modern">
+                                <i class="bi bi-calendar3 me-1"></i>{{ event.date }}
+                            </span>
+                        </div>
+                        <p class="mb-0 text-muted">{{ event.description|truncatewords:20 }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-modern alert-info">
+                    <i class="bi bi-info-circle me-2"></i>No upcoming events at the moment.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Available Seats -->
+        <div class="col-lg-6">
+            <div class="card-modern p-4">
+                <h3 class="fw-bold mb-4">
+                    <i class="bi bi-clipboard-check text-info me-2"></i>
+                    <span class="text-gradient">Admission Open: Available Seats</span>
+                </h3>
+                <div class="row g-3">
+                    {% for course in courses %}
+                    <div class="col-md-6">
+                        <div class="stats-card">
+                            <i class="bi bi-book-fill text-primary fs-2 mb-3"></i>
+                            <h5 class="fw-bold mb-2">{{ course.name }}</h5>
+                            <div class="stats-number">{{ course.available_seats }}</div>
+                            <div class="stats-label">Seats Available</div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-modern alert-info">
+                            <i class="bi bi-info-circle me-2"></i>No course information available.
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Stats Section -->
+    <div class="card-modern p-4 mb-5">
+        <h3 class="text-center fw-bold mb-4">
+            <i class="bi bi-people-fill text-primary me-2"></i>
+            <span class="text-gradient">Student Distribution</span>
+        </h3>
+        <div class="row g-3">
+            {% for stat in semester_counts %}
+            <div class="col-6 col-md-3">
+                <div class="dashboard-card primary text-center">
+                    <i class="bi bi-journal-text text-primary fs-3 mb-2"></i>
+                    <h4 class="fw-bold mb-2">Semester {{ stat.semester }}</h4>
+                    <div class="badge badge-primary-modern fs-6">{{ stat.count }} Students</div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-modern alert-info text-center">
+                    <i class="bi bi-info-circle me-2"></i>No student data available yet.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- BIM Course Structure -->
+    <div class="mb-5">
+        <h3 class="text-center mb-4 text-primary">Course Structure (BIM)</h3>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            {% for semester, subjects in bim_subjects.items %}
+            <div class="col">
+                <div class="card-modern h-100">
+                    <div class="card-header-modern text-center">
+                        <h5 class="mb-0">Semester {{ semester }}</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for subject in subjects %}
+                        <li class="list-group-item small">{{ subject }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Fee Structure Preview -->
+    <div class="mb-5">
+        <h3 class="text-center mb-4 text-dark">Fee Structure (BIM)</h3>
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead>
+                    <tr>
+                        <th>Batch (Year)</th>
+                        <th>Total Fee (NPR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for year, fee in fee_structure.items %}
+                    <tr>
+                        <td>{{ year }}</td>
+                        <td>Rs. {{ fee }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
