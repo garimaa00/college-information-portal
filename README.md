@@ -111,6 +111,4 @@ python manage.py collectstatic --clear --noinput
 ```bash
 python manage.py migrate --fake-initial
 ```
-# collegepro
-# college
-# college
+
