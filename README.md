@@ -13,7 +13,7 @@ Django-based web application for managing college operations including student/t
 
 ```bash
 # Navigate to project directory
-cd "/home/neupane/Downloads/college-information-portal-main (3)/college-information-portal-main"
+cd "/home/garima/Downloads/college-information-portal-main/college-information-portal-main"
 
 # Create virtual environment
 python3 -m venv venv
