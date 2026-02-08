@@ -16,10 +16,10 @@ Django-based web application for managing college operations including student/t
 cd "/home/garima/Downloads/college-information-portal-main/college-information-portal-main"
 
 # Create virtual environment
-python3 -m venv venv
+python -m venv venv
 
 # Activate virtual environment
-source venv/bin/activate
+ venv/Scripts/activate
 ```
 
 ### 2. Install Dependencies
@@ -61,7 +61,7 @@ python init_db.py
 
 **Default Admin Credentials:**
 - Email: `admin@shankerdev.edu`
-- Password: `admin123`
+- Password: `adminpassword123`
 
 **For existing database:**
 
@@ -111,6 +111,4 @@ python manage.py collectstatic --clear --noinput
 ```bash
 python manage.py migrate --fake-initial
 ```
-# collegepro
-# college
-# college
+
